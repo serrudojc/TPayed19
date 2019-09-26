@@ -1,10 +1,10 @@
 CC=g++				    # compilador c
 CFLAGS=-c -Wall			# flags pasados al complilador
 LDFLAGS=			    # flags pasados al linker
-OBJS= DBmain.o #leerPruebaElDat.o			# lista de todos los archivos objeto
+OBJS= leerArch.o		#DBmain.o 		# lista de todos los archivos objeto
 SOURCES=$(OBJS:.o=.c)	# lista de todos los archivos fuente
 HEADERS=*.hpp			    # lista de todos los archivos header
-EXE=DBmain			    # nombre del ejecutable
+EXE= leerArch #DBmain			    # nombre del ejecutable
 
 # regla para generar el ejecutable
 $(EXE): $(OBJS)
