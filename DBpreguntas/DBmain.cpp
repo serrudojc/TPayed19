@@ -1,35 +1,76 @@
+#define CANTPREG 3
+
 #include <iostream>
 using namespace std;
-#include "DBfunciones.hpp"
 
-struct preguntas preg[CANTCATEG][CANTPREG];
 
+struct structPreg{
+	string pregunta;
+	string respuesta;
+	bool pregHabil = true;
+};
+
+//Nodo: base de datos de las preguntas
+struct NodoCat {
+	string categoria;
+	structPreg preguntas[CANTPREG];
+	bool catHabil;
+	NodoCat *sig;
+};
+
+//declaro lista, puntero al primer nodo que apunta a NULL, o sea, lista vacia. 
+NodoCat *lista = NULL;
+
+//declaro un auxiliar. Aun no se si lo voy a usar
+NodoCat *temporario = NULL;
+
+//------------------------------------------------
+void agregarNodo(NodoCat*& lista, string inCategoria, structPreg inPreguntas[]);
+
+
+//------------------------------------------------
 int main (){
+	string cat;
+	structPreg aux[CANTPREG];
 
-	FILE * arch = fopen("preguntas.dat","wb+"); //ab?+?
-
-	for(int i=0; i<CANTCATEG; i++){
-		for(int j=0; j<CANTPREG; j++){
-			cout<<"Ingresar categoria\t["<<i<<"]["<<j<<"]: ";
-			cin.ignore(); getline(cin, preg[i][j].categoria);
-			//cin>>preg[i][j].categoria;
-			cout<<"Ingresar pregunta\t["<<i<<"]["<<j<<"]: ";
-			cin.ignore(); getline(cin, preg[i][j].pregunta);
-			//cin>>preg[i][j].pregunta;
-			cout<<"Ingresar respuesta\t["<<i<<"]["<<j<<"]: ";
-			cin.ignore(); getline(cin, preg[i][j].respuesta);			
-			//cin>>preg[i][j].respuesta;
-			preg[i][j].habilitada = true;
-			cout<<endl;
+	do{
+		cout<<"Ingresar categoria: ";
+		getline(cin, cat);
+		if(cat == "0")
+			break;
+		for(int i=0; i<CANTPREG; i++){
+			cout<<"Ingresar pregunta \t["<<i+1<<"]: ";
+			getline(cin, aux[i].pregunta); 
+			cout<<"Ingresar respuesta \t["<<i+1<<"]: ";
+			getline(cin, aux[i].respuesta);
 		}
+		cout<<endl;		
+		agregarNodo(lista, cat, aux);
 	}
+	while(1);	
 
-	for(int i=0; i<CANTCATEG; i++){
-		for(int j=0; j<CANTPREG; j++){
-			fwrite(&preg[i][j], sizeof(preg),1, arch);
-		}
-	}
 
-	fclose(arch);
 	return 0;
 }
+//------------------------------------------------
+void agregarNodo(NodoCat*& lista, string inCategoria, structPreg inPreguntas[]){
+
+	NodoCat* p = new NodoCat(); 
+	p->categoria = inCategoria;
+	for (int i =0; i<CANTPREG; i++){
+		p->preguntas[i] = inPreguntas[i];
+	}
+	p->catHabil = true;
+	p->sig = NULL;
+
+	if(lista==NULL){	
+		lista = p;
+	} else {		
+		NodoCat* aux = lista;
+		while(aux->sig != NULL){
+			aux= aux->sig;
+		}
+	aux->sig = p;
+	}
+}
+//-------------------------------------------------
