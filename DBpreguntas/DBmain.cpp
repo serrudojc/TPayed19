@@ -2,20 +2,20 @@
 #include <iostream>
 using namespace std;
 
-struct structPreg{
+struct structPregunta{
 	string pregunta;
 	string respuesta;
-	bool pregHabil = true;
+	bool pregEnabled = true;
 };
 
-struct structCat {
+struct structCategoria {
 	string categoria;
-	structPreg preguntas[CANTPREG];
-	bool catHabil = true;
+	structPregunta preguntas[CANTPREG];
+	bool catEnabled = true;
 };
 
 struct Nodo{
-	structCat info;
+	structCategoria info;
 	Nodo *sig;
 };
 
@@ -26,16 +26,17 @@ Nodo *lista = NULL;
 Nodo *temporario = NULL;
 
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, structCat v);
-structCat eliminarPrimerNodo (Nodo*& lista);
+void agregarNodo(Nodo*& lista, structCategoria v);
+structCategoria eliminarPrimerNodo (Nodo*& lista);
 
 //------------------------------------------------
 int main (){
-	structCat auxCat;
+	structCategoria auxCat;
 
 	do{
 		cout<<"Ingresar categoria: ";
 		getline(cin, auxCat.categoria);
+		//salgo con valores igual a cero
 		if(auxCat.categoria == "0")
 			break;
 		for(int i=0; i<CANTPREG; i++){
@@ -61,7 +62,7 @@ int main (){
 	return 0;
 }
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, structCat v){
+void agregarNodo(Nodo*& lista, structCategoria v){
 
 	Nodo* p = new Nodo(); 
 	p->info.categoria = v.categoria;
