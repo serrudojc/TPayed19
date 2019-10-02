@@ -1,24 +1,25 @@
+#define CANTPREG 2
 #include <iostream>
+#include <stdio.h>
 using namespace std;
-#define CANTPREG 3
 
-struct structPreg{
+struct structPregunta{
 	string pregunta;
 	string respuesta;
-	bool pregHabil = true;
+	bool pregEnabled = true;
 };
 
-struct structCat {
+struct structCategoria {
 	string categoria;
-	structPreg preguntas[CANTPREG];
-	bool catHabil = true;
+	structPregunta preguntas[CANTPREG];
+	bool catEnabled = true;
 };
+
 
 int main(){
-		cout<<"llegué aca";
 	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
-	structCat reg;
-	fread(&reg, sizeof(structCat),1,arch);
+	structCategoria reg;
+	fread(&reg, sizeof(structCategoria),1,arch);
 	//me tira segmentation fault a partir de fread
 /*
 	while(!feof(arch)){

@@ -1,6 +1,5 @@
 #define CANTPREG 2
 #include <iostream>
-#include <stdio.h>
 using namespace std;
 
 struct structPregunta{
@@ -17,7 +16,7 @@ struct structCategoria {
 
 struct Nodo{
 	structCategoria info;
-	Nodo *sig;			
+	Nodo *sig;
 };
 
 //declaro lista, puntero al primer nodo que apunta a NULL, o sea, lista vacia. 
@@ -33,6 +32,9 @@ structCategoria eliminarPrimerNodo (Nodo*& lista);
 //------------------------------------------------
 int main (){
 	structCategoria auxCat;
+
+	FILE *fp = fopen("preguntas.dat", "wb");
+	structCategoria reg;
 
 	do{
 		cout<<"Ingresar categoria: ";
@@ -59,8 +61,7 @@ int main (){
 	}
 	while(1);	
 
-	FILE *fp = fopen("preguntas.dat", "wb");
-	structCategoria reg;
+
 
 	while(lista != NULL){
 		reg = eliminarPrimerNodo (lista);	//CONSULTA: me va retornar -1?
