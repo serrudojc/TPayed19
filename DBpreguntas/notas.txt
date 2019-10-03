@@ -1,0 +1,10 @@
+creé un archivo "texto" para no tener que estar tipeando
+
+Estoy codeado en SublimeText y luego lo ejecuto en la consola de Ubuntu
+creo que ya venia con un compilador gcc o g++, no me acuerdo.
+
+No puedo usar un IDE, no me funcan, no se, hay que hacer un bardo con el MingW, no se, me cansé.
+
+
+//para redireccionar el stdin desde un archivo
+$./programa<archivo_de_entrada

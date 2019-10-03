@@ -1,39 +1,35 @@
-#define CANTPREG 2
+#define CANTPREG 3
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
 using namespace std;
 
-struct structPregunta{
+struct sPregunta{
 	char pregunta[120];
 	char respuesta[120];
 	bool pregEnabled = true;
 };
 
-struct structCategoria {
+struct sCategoria {
 	char categoria[20];
-	structPregunta preguntas[CANTPREG];
+	sPregunta preguntas[CANTPREG];
 	bool catEnabled = true;
 };
 
 struct Nodo{
-	structCategoria info;
+	sCategoria info;
 	Nodo *sig;			
 };
 
 //declaro lista, puntero al primer nodo que apunta a NULL, o sea, lista vacia. 
 Nodo *lista = NULL;
 
-//declaro un auxiliar. Aun no se si lo voy a usar
-Nodo *temporario = NULL;
-
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, structCategoria v);
-structCategoria eliminarPrimerNodo (Nodo*& lista);
-
+void agregarNodo(Nodo*& lista, sCategoria v);
+sCategoria eliminarPrimerNodo (Nodo*& lista);
 //------------------------------------------------
 int main (){
-	structCategoria auxCat;
+	sCategoria auxCat;
 	char pre[120], res[120], categ[20];
 
 	do{
@@ -54,32 +50,23 @@ int main (){
 			strcpy(auxCat.preguntas[i].respuesta, res);
 		}
 		cout<<endl;	
-		/*
-		cout<<"voy a mostrar el auxCat"<<endl;
-		cout<<auxCat.categoria<<endl;
-		cout<<auxCat.catEnabled<<endl;
-		for(int i=0; i<CANTPREG; i++){
-			cout<<auxCat.preguntas[i].pregunta<<" "<<auxCat.preguntas[i].respuesta<<" "<<auxCat.preguntas[i].pregEnabled<<endl;
-		}
-		*/
 		agregarNodo(lista, auxCat);
 	}
 	while(1);	
 
 	FILE *fp = fopen("preguntas.dat", "wb");
-	structCategoria reg;
+	sCategoria reg;
 
 	while(lista != NULL){
 		reg = eliminarPrimerNodo (lista);	//CONSULTA: me va retornar -1?
-		fwrite(&reg, sizeof(structCategoria), 1, fp);
+		fwrite(&reg, sizeof(sCategoria), 1, fp);
 	}
 	fclose(fp);
 
 	return 0;
 }
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, structCategoria v){
-
+void agregarNodo(Nodo*& lista, sCategoria v){
 	Nodo* p = new Nodo(); 
 	p->info = v;
 	p->sig = NULL;
@@ -95,9 +82,9 @@ void agregarNodo(Nodo*& lista, structCategoria v){
 	}
 }
 //-------------------------------------------------
-structCategoria eliminarPrimerNodo (Nodo*& lista){
+sCategoria eliminarPrimerNodo (Nodo*& lista){
 	Nodo* aux = lista; 	//como es por referencia
-	structCategoria valor; 
+	sCategoria valor; 
 	strcpy(valor.categoria,"-1");	//chequear esta parte
 	if(aux != NULL){	//chequeo que no sea una lista vacia
 		valor = lista->info;
