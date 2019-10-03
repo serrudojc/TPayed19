@@ -1,16 +1,17 @@
 #define CANTPREG 2
 #include <iostream>
 #include <stdio.h>
+#include <string.h>
 using namespace std;
 
 struct structPregunta{
-	string pregunta;
-	string respuesta;
+	char pregunta[120];
+	char respuesta[120];
 	bool pregEnabled = true;
 };
 
 struct structCategoria {
-	string categoria;
+	char categoria[20];
 	structPregunta preguntas[CANTPREG];
 	bool catEnabled = true;
 };
@@ -33,18 +34,24 @@ structCategoria eliminarPrimerNodo (Nodo*& lista);
 //------------------------------------------------
 int main (){
 	structCategoria auxCat;
+	char pre[120], res[120], categ[20];
 
 	do{
 		cout<<"Ingresar categoria: ";
-		getline(cin, auxCat.categoria);
+		cin.getline(categ,20);
 		//salgo con valores igual a cero
-		if(auxCat.categoria == "0")
+		if(strcmp(categ,"0")==0)
 			break;
+		strcpy(auxCat.categoria, categ);
+		
 		for(int i=0; i<CANTPREG; i++){
 			cout<<"Ingresar pregunta \t["<<i+1<<"]: ";
-			getline(cin, auxCat.preguntas[i].pregunta); 
+			cin.getline(pre,120); 
+			strcpy(auxCat.preguntas[i].pregunta, pre);
+
 			cout<<"Ingresar respuesta \t["<<i+1<<"]: ";
-			getline(cin, auxCat.preguntas[i].respuesta);
+			cin.getline(res,120);
+			strcpy(auxCat.preguntas[i].respuesta, res);
 		}
 		cout<<endl;	
 		/*
@@ -91,7 +98,7 @@ void agregarNodo(Nodo*& lista, structCategoria v){
 structCategoria eliminarPrimerNodo (Nodo*& lista){
 	Nodo* aux = lista; 	//como es por referencia
 	structCategoria valor; 
-	valor.categoria = "-1";	//chequear esta parte
+	strcpy(valor.categoria,"-1");	//chequear esta parte
 	if(aux != NULL){	//chequeo que no sea una lista vacia
 		valor = lista->info;
 		lista = lista->sig;
