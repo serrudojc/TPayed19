@@ -10,6 +10,7 @@ using namespace std;
 
 
 struct Participante{
+	int idParticipante;
 	int puntos = 0;
 	Historico* historial;
 };
@@ -42,5 +43,12 @@ int main(){
 	}
 	
 	return 0;
+}
+
+//coloco idParticipante
+void colocarIdParticipante(Participante participantes[]){
+	for(int i=0; i<CANTPART; i++){
+		participantes[i].idParticipante = i+1;
+	}
 }
 
