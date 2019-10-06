@@ -4,23 +4,23 @@
 #include <string.h>
 using namespace std;
 
-struct sPregunta{
+struct Pregunta{
 	char pregunta[120];
 	char respuesta[120];
 	bool pregEnabled = true;
 };
 
-struct sCategoria {
+struct Categoria {
 	char categoria[20];
-	sPregunta preguntas[CANTPREG];
+	Pregunta preguntas[CANTPREG];
 	bool catEnabled = true;
 };
 
 
 int main(){
 	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
-	sCategoria reg;
-	fread(&reg, sizeof(sCategoria),1,arch);
+	Categoria reg;
+	fread(&reg, sizeof(Categoria),1,arch);
 
 	while(!feof(arch)){
 		cout<<"Categoria: "<<reg.categoria<<endl;
@@ -31,7 +31,7 @@ int main(){
 			cout<<"Habilitada ["<<i+1<<"]: "<<reg.preguntas[i].pregEnabled<<endl;
 		}
 		cout<<endl;
-		fread(&reg, sizeof(sCategoria),1,arch);
+		fread(&reg, sizeof(Categoria),1,arch);
 	}
 	fclose(arch);
 	return 0;

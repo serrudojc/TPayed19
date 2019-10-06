@@ -4,20 +4,20 @@
 #include <string.h>
 using namespace std;
 
-struct sPregunta{
+struct Pregunta{
 	char pregunta[120];
 	char respuesta[120];
 	bool pregEnabled = true;
 };
 
-struct sCategoria {
+struct Categoria {
 	char categoria[20];
-	sPregunta preguntas[CANTPREG];
+	Pregunta preguntas[CANTPREG];
 	bool catEnabled = true;
 };
 
 struct Nodo{
-	sCategoria info;
+	Categoria info;
 	Nodo *sig;			
 };
 
@@ -25,12 +25,12 @@ struct Nodo{
 Nodo *lista = NULL;
 
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, sCategoria v);
-sCategoria eliminarPrimerNodo (Nodo*& lista);
+void agregarNodo(Nodo*& lista, Categoria v);
+Categoria eliminarPrimerNodo (Nodo*& lista);
 //------------------------------------------------
 int main (){
-	sCategoria auxCat;
-	char pre[120], res[120], categ[20];
+	Categoria auxCat;
+	char preg[120], resp[120], categ[20];
 
 	do{
 		cout<<"Ingresar categoria: ";
@@ -42,12 +42,12 @@ int main (){
 		
 		for(int i=0; i<CANTPREG; i++){
 			cout<<"Ingresar pregunta \t["<<i+1<<"]: ";
-			cin.getline(pre,120); 
-			strcpy(auxCat.preguntas[i].pregunta, pre);
+			cin.getline(preg,120); 
+			strcpy(auxCat.preguntas[i].pregunta, preg);
 
 			cout<<"Ingresar respuesta \t["<<i+1<<"]: ";
-			cin.getline(res,120);
-			strcpy(auxCat.preguntas[i].respuesta, res);
+			cin.getline(resp,120);
+			strcpy(auxCat.preguntas[i].respuesta, resp);
 		}
 		cout<<endl;	
 		agregarNodo(lista, auxCat);
@@ -55,18 +55,18 @@ int main (){
 	while(1);	
 
 	FILE *fp = fopen("preguntas.dat", "wb");
-	sCategoria reg;
+	Categoria reg;
 
 	while(lista != NULL){
 		reg = eliminarPrimerNodo (lista);	//CONSULTA: me va retornar -1?
-		fwrite(&reg, sizeof(sCategoria), 1, fp);
+		fwrite(&reg, sizeof(Categoria), 1, fp);
 	}
 	fclose(fp);
 
 	return 0;
 }
 //------------------------------------------------
-void agregarNodo(Nodo*& lista, sCategoria v){
+void agregarNodo(Nodo*& lista, Categoria v){
 	Nodo* p = new Nodo(); 
 	p->info = v;
 	p->sig = NULL;
@@ -82,9 +82,9 @@ void agregarNodo(Nodo*& lista, sCategoria v){
 	}
 }
 //-------------------------------------------------
-sCategoria eliminarPrimerNodo (Nodo*& lista){
+Categoria eliminarPrimerNodo (Nodo*& lista){
 	Nodo* aux = lista; 	//como es por referencia
-	sCategoria valor; 
+	Categoria valor; 
 	strcpy(valor.categoria,"-1");	//chequear esta parte
 	if(aux != NULL){	//chequeo que no sea una lista vacia
 		valor = lista->info;
