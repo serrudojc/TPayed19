@@ -12,6 +12,7 @@ struct Pregunta{
 };
 
 struct Categoria {
+	int id;
 	char categoria[20];
 	Pregunta preguntas[CANTPREG];
 	bool catEnabled = true;
@@ -32,6 +33,7 @@ Categoria eliminarPrimerNodo (Nodo*& lista);
 int main (){
 	Categoria auxCat;
 	char preg[120], resp[120], categ[20];
+	int k=0;
 
 	do{
 		cout<<"Ingresar categoria: ";
@@ -40,6 +42,8 @@ int main (){
 		if(strcmp(categ,"0")==0)
 			break;
 		strcpy(auxCat.categoria, categ);
+		auxCat.id = k;
+		k++;
 		
 		for(int i=0; i<CANTPREG; i++){
 			cout<<"Ingresar pregunta \t["<<i+1<<"]: ";

@@ -14,6 +14,7 @@ struct Pregunta{
 };
 
 struct Categoria {
+	int id;
 	char categoria[20];
 	Pregunta preguntas[CANTPREG];
 	bool catEnabled = true;
@@ -26,6 +27,7 @@ int main(){
 	fread(&reg, sizeof(Categoria),1,arch);
 
 	while(!feof(arch)){
+		cout<<"id: "<<reg.id<<endl;
 		cout<<"Categoria: "<<reg.categoria<<endl;
 		cout<<"Habilitada: "<<reg.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){

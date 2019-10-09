@@ -2,6 +2,8 @@
 //Luego, voy a elegir alguna pregunta random  la voy a mostrar
 
 #define CANTPREG 3
+#define CANTTURNO	3
+#define CANTPART 	3
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
@@ -17,6 +19,7 @@ struct Pregunta{
 };
 
 struct Categoria {
+	int id;
 	char categoria[20];
 	Pregunta preguntas[CANTPREG];
 	bool catEnabled = true;
@@ -31,8 +34,10 @@ void agregarNodo(Nodo*& lista, Categoria v);
 void mostrar (Nodo* lista);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
+Nodo* buscar(Nodo* lista, int v);
 //-------------------------------------------------------------------
 int main(){
+	int catRandom;
 	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
 	Categoria reg;
 	fread(&reg, sizeof(Categoria),1,arch);
@@ -46,18 +51,33 @@ int main(){
 		fread(&reg, sizeof(Categoria),1,arch);
 		}
 	fclose(arch);
-	
+/*	
 	cout<<endl<<"\t*-*-*-* Voy a mostrar toda la lista cargada en memoria *-*-*-*"<<endl;
 	mostrar(lista);
-
+*/
+	
+	//problema: busco, pero muestro todas las categorias desde la encontrada hata el NULL
 	cout<<endl<<"\t*-*-*-* Voy a mostrar de forma random una pregunta de la lista cargada *-*-*-*"<<endl;
 	srand((int)time(NULL)); 	//inicializamos semilla para generador random
 
 	cout<<"Cantidad de nodos de la lista :"<<cantidadNodos(lista)<<endl;
+/*
 	while(1){
 		cout<<"nºcategoria: "<<get_rand(MIN, cantidadNodos(lista))<<endl;
 		cout<<"nºpregunta: "<<get_rand(MIN, CANTPREG)<<endl<<endl;
 		sleep(2);
+	}
+*/
+	for(int i=0; i<CANTTURNO; i++){
+		cout<<"dentro del for i ["<<i<<"]"<<endl;
+		for(int j=0; j<CANTPART; j++){
+			//voy a recorrer la lista hasta encontrar la categoria que me dice el random
+			cout<<"dentro del for j ["<<j<<"]"<<endl;
+			catRandom = get_rand(MIN, cantidadNodos(lista));
+			cout<<"muestro random= "<<catRandom<<endl;
+			mostrar(buscar(lista, catRandom));
+		}
+
 	}
 
 	return 0;
@@ -84,6 +104,7 @@ void mostrar (Nodo* lista){
 
 	Nodo *aux = lista;
 	while(aux != NULL){
+		cout<<aux->info.id<<endl;
 		cout<<aux->info.categoria<<endl;
 		cout<<aux->info.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){
@@ -100,7 +121,7 @@ void mostrar (Nodo* lista){
 //--------------------------------------------------------------------------
 //devuelve un entero entre min y max
 int get_rand(int min, int max){
-	return rand()%(max)+1;
+	return rand()%(max);
 }
 //-------------------------------------------------------------------------
 //devuelve cantidad de nodos de una lista
@@ -113,5 +134,15 @@ int cantidadNodos (Nodo* lista){
 		aux = aux->sig;
 	}
 	return contador;
+}
+//-------------------------------------------------------------------------
+Nodo* buscar(Nodo* lista, int v){	
+	Nodo* aux;
+	aux=lista;	
+
+	while((aux != NULL)&&(aux->info.id != v) ){	
+		aux = aux->sig;
+	}
+	return aux;
 }
 //-------------------------------------------------------------------------
