@@ -1,3 +1,6 @@
+//Este programa sólo me permite leer el contenido del preguntas.dat
+// Para verificar su contenido.
+
 #define CANTPREG 3
 #include <iostream>
 #include <stdio.h>

@@ -1,3 +1,4 @@
+//Programa que uso para cargar las preguntas y respuestas del juego. Ver temas mayus y acentos
 #define CANTPREG 3
 #include <iostream>
 #include <stdio.h>
