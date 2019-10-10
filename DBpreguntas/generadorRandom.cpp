@@ -32,6 +32,7 @@ struct Nodo{
 
 void agregarNodo(Nodo*& lista, Categoria v);
 void mostrar (Nodo* lista);
+void mostrarUnNodo (Nodo* lista);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);
@@ -55,7 +56,7 @@ int main(){
 	cout<<endl<<"\t*-*-*-* Voy a mostrar toda la lista cargada en memoria *-*-*-*"<<endl;
 	mostrar(lista);
 */
-	
+
 	//problema: busco, pero muestro todas las categorias desde la encontrada hata el NULL
 	cout<<endl<<"\t*-*-*-* Voy a mostrar de forma random una pregunta de la lista cargada *-*-*-*"<<endl;
 	srand((int)time(NULL)); 	//inicializamos semilla para generador random
@@ -68,6 +69,7 @@ int main(){
 		sleep(2);
 	}
 */
+
 	for(int i=0; i<CANTTURNO; i++){
 		cout<<"dentro del for i ["<<i<<"]"<<endl;
 		for(int j=0; j<CANTPART; j++){
@@ -75,7 +77,7 @@ int main(){
 			cout<<"dentro del for j ["<<j<<"]"<<endl;
 			catRandom = get_rand(MIN, cantidadNodos(lista));
 			cout<<"muestro random= "<<catRandom<<endl;
-			mostrar(buscar(lista, catRandom));
+			mostrarUnNodo(buscar(lista, catRandom));
 		}
 
 	}
@@ -115,6 +117,25 @@ void mostrar (Nodo* lista){
 		cout<<endl;
 		
 		aux = aux->sig;		
+	}
+}
+
+//--------------------------------------------------------------------------
+void mostrarUnNodo (Nodo* lista){ 
+
+	Nodo *aux = lista;
+	while(aux != NULL){
+		cout<<aux->info.id<<endl;
+		cout<<aux->info.categoria<<endl;
+		cout<<aux->info.catEnabled<<endl;
+		for(int i=0; i<CANTPREG; i++){
+			cout<<"Pregunta   ["<<i+1<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i+1<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i+1<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+		}
+		cout<<endl;
+		
+		aux = NULL;		
 	}
 }
 	
