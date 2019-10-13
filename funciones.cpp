@@ -64,6 +64,21 @@ void mostrarUnNodo(Nodo* lista){
 	}
 }
 //--------------------------------------------------------------------------
+Nodo *leerPreguntasDat(Nodo *&lista){
+	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
+	Categoria reg;
+	fread(&reg, sizeof(Categoria),1,arch);
+
+	//Cargo preguntas.dat en memoria
+	while(!feof(arch)){
+		//mando a la lista
+		agregarNodo(lista, reg);
+		fread(&reg, sizeof(Categoria),1,arch);
+		}
+	fclose(arch);
+	return lista;
+}
+//--------------------------------------------------------------------------
 //devuelve un entero entre min y max
 int get_rand(int min, int max){
 	return rand()%(max);
@@ -96,3 +111,4 @@ Nodo* buscarCat(Nodo* lista, int v){
 	}
 	return aux;
 }
+//-------------------------------------------------------------------------

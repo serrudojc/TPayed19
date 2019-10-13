@@ -10,56 +10,44 @@ using namespace std;
 //-------------------------------------------------------------------
 int main(){
 
-	Nodo *listaCat = NULL;
-
-	int catRandom, pregRandom;
-	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
-	Categoria reg;
-	fread(&reg, sizeof(Categoria),1,arch);
 	Nodo *lista = NULL;
+	Nodo *nodoCat = NULL;
+	int catRandom, pregRandom;
 
-	//Cargo preguntas.dat en memoria
-	while(!feof(arch)){
-		//mando a la lista
-		agregarNodo(lista, reg);
-		fread(&reg, sizeof(Categoria),1,arch);
-		}
-	fclose(arch);
-/*	
-	cout<<endl<<"\t*-*-*-* Voy a mostrar toda la lista cargada en memoria *-*-*-*"<<endl;
-	mostrar(lista);
-*/
-	cout<<endl<<"\t*-*-*-* Voy a mostrar de forma random una pregunta de la lista cargada *-*-*-*"<<endl;
-	srand((int)time(NULL)); 	//inicializamos semilla para generador random
+//cargo en memoria las preguntas
+	lista = leerPreguntasDat(lista);
+//	mostrar(lista); //muestra lista cargada en memoria
+
+//inicializamos semilla para generador random
+	srand((int)time(NULL)); 	
 
 //	cout<<"Cantidad de nodos de la lista :"<<cantidadNodos(lista)<<endl;
 
 	for(int i=0; i<CANTTURNO; i++){
-		cout<<"dentro del for i["<<i<<"]";
 		for(int j=0; j<CANTPART; j++){
-			//voy a recorrer la lista hasta encontrar la categoria que me dice el random
-			cout<<"j["<<j<<"]"<<endl;
+			//recorro lista hasta encontrar la categoria del random
+			cout<<"[turno][jugador] i["<<i<<"]j["<<j<<"]: ";
 			catRandom = get_rand(MIN, cantidadNodos(lista));
-
-			listaCat = buscarCat(lista, catRandom);	
-			if(listaCat->info.catEnabled){
-				cout<<"muestro catRandom= "<<catRandom<<endl;
-				pregRandom = get_rand(MIN, CANTPREG);
-				if(listaCat->info.preguntas[pregRandom].pregEnabled){
-					cout<<listaCat->info.preguntas[pregRandom].pregunta<<": ";
-					cout<<endl;
-				}
-			}		
-
-/*COMPLETAR: tengo que desabilitar las preg y cat que hayan sido contestadas
-tengo que ver que pasa si la cat o preg no está habiliatada
-*/
-
-			sleep(2);
+			nodoCat = buscarCat(lista, catRandom);
+			while(1){
+				if(nodoCat->info.catEnabled){
+					pregRandom = get_rand(MIN, CANTPREG);
+					if(nodoCat->info.preguntas[pregRandom].pregEnabled){
+						cout<<nodoCat->info.preguntas[pregRandom].pregunta<<": ";
+						nodoCat->info.preguntas[pregRandom].pregEnabled = false;
+						cout<<endl;
+						break;
+					}else{
+						cout<<"Repetido: cat:"<<catRandom<<" preg:"<<pregRandom<<endl;
+						if()
+						sleep(1);
+					}
+				}		
+			}
+			//sleep(2);
 			//mostrarUnNodo(buscar(lista, catRandom));
 		}
 
 	}
-
 	return 0;
 }

@@ -1,7 +1,7 @@
-#define CANTPREG 	3
+#define CANTPREG 	4
 #define CANTTURNO	3
 #define CANTPART 	3
-#define MIN 		1
+#define MIN 		0
 
 struct Pregunta{
 	char pregunta[120];
@@ -27,6 +27,7 @@ Categoria eliminarPrimerNodo (Nodo*& lista);
 //------------------------------------------------
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
+Nodo *leerPreguntasDat(Nodo *&lista);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);

@@ -16,9 +16,9 @@ int main(){
 		cout<<"Categoria: "<<reg.categoria<<endl;
 		cout<<"Habilitada: "<<reg.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i+1<<"]: "<<reg.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i+1<<"]: "<<reg.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i+1<<"]: "<<reg.preguntas[i].pregEnabled<<endl;
+			cout<<"Pregunta   ["<<i<<"]: "<<reg.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<reg.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<reg.preguntas[i].pregEnabled<<endl;
 		}
 		cout<<endl;
 		fread(&reg, sizeof(Categoria),1,arch);
