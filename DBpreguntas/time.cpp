@@ -5,7 +5,7 @@
 #include<ctime> 
 using namespace std; 
 int main() 
-{ 
+{   char fecha[30];
     // Declaring argument for time() 
     time_t tt; 
   
@@ -21,6 +21,7 @@ int main()
   
     cout << "Current Day, Date and Time is = " 
          << asctime(ti); 
-  
+    fecha = asctime(ti);
+    cout<<fecha<<endl;
   return 0; 
 } 

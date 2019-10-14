@@ -20,6 +20,22 @@ void agregarNodo(Nodo*& lista, Categoria v){
 	}
 }
 //-------------------------------------------------------
+void agregarNodoJuego(Participantes *&lista, ResPart v){
+	Participantes* p = new Participantes(); 
+	p->info = v;
+	p->sig = NULL;
+
+	if(lista == NULL){	
+		lista = p;
+	} else {		
+		Participantes* aux = lista;
+		while(aux->sig != NULL){
+			aux = aux->sig;
+		}
+	aux->sig = p;
+	}
+}
+//-------------------------------------------------------
 Categoria eliminarPrimerNodo (Nodo*& lista){
 	Nodo* aux = lista; 	//como es por referencia
 	Categoria valor; 
@@ -39,9 +55,9 @@ void mostrar (Nodo* lista){
 		cout<<aux->info.categoria<<endl;
 		cout<<aux->info.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i+1<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i+1<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i+1<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
 		}
 		cout<<endl;
 		aux = aux->sig;
@@ -55,9 +71,9 @@ void mostrarUnNodo(Nodo* lista){
 		cout<<aux->info.categoria<<endl;
 		cout<<aux->info.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i+1<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i+1<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i+1<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
 		}
 		cout<<endl;		
 		aux = NULL;		

@@ -13,12 +13,12 @@ int main (){
 
 	Categoria auxCat;
 	
-	char preg[120], resp[120], categ[20];
+	char categ[CHARCATEG];
 	int k=0;
 
 	do{
 		cout<<"Ingresar categoria: ";
-		cin.getline(categ,20);
+		cin.getline(categ,CHARCATEG);
 		//salgo con valores igual a cero
 		if(strcmp(categ,"0")==0)
 			break;
@@ -27,13 +27,12 @@ int main (){
 		k++;
 		
 		for(int i=0; i<CANTPREG; i++){
-			cout<<"Ingresar pregunta \t["<<i+1<<"]: ";
-			cin.getline(preg,120); 
-			strcpy(auxCat.preguntas[i].pregunta, preg);
-
-			cout<<"Ingresar respuesta \t["<<i+1<<"]: ";
-			cin.getline(resp,120);
-			strcpy(auxCat.preguntas[i].respuesta, resp);
+			cout<<"Ingresar pregunta \t["<<i<<"]: ";
+			cin.getline(auxCat.preguntas[i].pregunta,CHARPREG); 
+			//cin.ignore();
+			cout<<"Ingresar respuesta \t["<<i<<"]: ";
+			cin.getline(auxCat.preguntas[i].respuesta,CHARRESP);
+			//cin.ignore();
 		}
 		cout<<endl;	
 		agregarNodo(lista, auxCat);

@@ -12,9 +12,9 @@ int main(){
 	fread(&reg, sizeof(Categoria),1,arch);
 
 	while(!feof(arch)){
-		cout<<"id: "<<reg.id<<endl;
-		cout<<"Categoria: "<<reg.categoria<<endl;
-		cout<<"Habilitada: "<<reg.catEnabled<<endl;
+		cout<<"id: "<<"\t\t"<<reg.id<<endl;
+		cout<<"Categoria: "<<"\t"<<reg.categoria<<endl;
+		cout<<"Habilitada: "<<"\t"<<reg.catEnabled<<endl;
 		for(int i=0; i<CANTPREG; i++){
 			cout<<"Pregunta   ["<<i<<"]: "<<reg.preguntas[i].pregunta<<endl;
 			cout<<"Respuesta  ["<<i<<"]: "<<reg.preguntas[i].respuesta<<endl;

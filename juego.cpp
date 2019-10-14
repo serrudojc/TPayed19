@@ -1,5 +1,4 @@
 //Primero cargo en memoria preguntas.dat y elijo de forma random una.
-
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>			//para rand
@@ -9,9 +8,16 @@ using namespace std;
 
 //-------------------------------------------------------------------
 int main(){
-
+	//cabeza de lista cargada desde preguntas.dat
 	Nodo *lista = NULL;
+
+	//puntero a estructura tipo Nodo que uso para guardar el nodo que me interesa de la lista
 	Nodo *nodoCat = NULL;
+
+	//cabeza de lista que guarda historial de preguntas, respuestas, resultado y hora.
+	Nodo *juego = NULL;
+	Categoria auxJuego;
+
 	int catRandom, pregRandom;
 
 //cargo en memoria las preguntas
@@ -21,12 +27,12 @@ int main(){
 //inicializamos semilla para generador random
 	srand((int)time(NULL)); 	
 
-//	cout<<"Cantidad de nodos de la lista :"<<cantidadNodos(lista)<<endl;
-
+//empezamos juego. 
 	for(int i=0; i<CANTTURNO; i++){
 		for(int j=0; j<CANTPART; j++){
 			//recorro lista hasta encontrar la categoria del random
 			cout<<"[turno][jugador] i["<<i<<"]j["<<j<<"]: ";
+
 			catRandom = get_rand(MIN, cantidadNodos(lista));
 			nodoCat = buscarCat(lista, catRandom);
 			while(1){
@@ -35,19 +41,22 @@ int main(){
 					if(nodoCat->info.preguntas[pregRandom].pregEnabled){
 						cout<<nodoCat->info.preguntas[pregRandom].pregunta<<": ";
 						nodoCat->info.preguntas[pregRandom].pregEnabled = false;
+						nodoCat->info.catEnabled--;
 						cout<<endl;
+						//salgo del while
 						break;
 					}else{
-						cout<<"Repetido: cat:"<<catRandom<<" preg:"<<pregRandom<<endl;
-						if()
-						sleep(1);
+						cout<<"Repetido: cat:"<<catRandom<<" preg:"<<pregRandom<<endl;				
 					}
+				}else{
+					//Categoria sin preguntas disponibles. vuelvo a elegir categoria
+					cout<<"categoria "<<nodoCat->info.id<<" desactivada"<<endl;
+					j--;
+					//salgo del while
+					break;
 				}		
 			}
-			//sleep(2);
-			//mostrarUnNodo(buscar(lista, catRandom));
 		}
-
 	}
 	return 0;
 }
