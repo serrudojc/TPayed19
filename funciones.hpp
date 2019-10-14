@@ -4,7 +4,7 @@
 #define MIN 		0
 #define CHARPREG	120
 #define CHARRESP	120
-#define CHARCATEG	120
+#define CHARCATEG	30
 //------------------------------------------------
 //Estructuras para las preguntas del juego
 struct Pregunta{
@@ -38,10 +38,11 @@ struct Nodo{
 */
 
 struct ResPart{
+	int puntaje = 0; //puntaje por nodo o total?
 	char pregunta[CHARPREG];
 	char resp[CHARRESP];
 	bool esCorrecta = false;
-	char tiempo[30]; //no se como hacer esto aun
+	char tiempo[CHARCATEG]; //no se como hacer esto aun
 };
 
 struct Participantes{

@@ -53,15 +53,16 @@ int main(){
 						
 						strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRandom].pregunta);	//guardo pregunta en auxReg
 						
-						cout<<"imprimo resp part: "<<auxReg.resp<<endl;
-						cout<<"imprimo resp orig: "<<nodoCat->info.preguntas[pregRandom].respuesta<<endl;
+						//cout<<"imprimo resp part: "<<auxReg.resp<<endl;
+						//cout<<"imprimo resp orig: "<<nodoCat->info.preguntas[pregRandom].respuesta<<endl;
 
-						if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRandom].respuesta) == 0)	//comparo respuestas
+						if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRandom].respuesta) == 0){	//comparo respuestas
 							auxReg.esCorrecta = true;
+						}
 						//faltaria guardar hora y fecha
 						agregarNodoJuego(part[j], auxReg);
 						fwrite(&auxReg, sizeof(ResPart) ,1, fp);
-
+						auxReg.esCorrecta = false;
 
 						//salgo del while
 						break;
