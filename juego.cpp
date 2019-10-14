@@ -14,9 +14,12 @@ int main(){
 	//puntero a estructura tipo Nodo que uso para guardar el nodo que me interesa de la lista
 	Nodo *nodoCat = NULL;
 
-	//cabeza de lista que guarda historial de preguntas, respuestas, resultado y hora.
-	Nodo *juego = NULL;
-	Categoria auxJuego;
+
+	//array de punteros a tipo Participantes. Tiene la cabeza de lista que guarda el historial.
+	Participantes *part[CANTPART] = {NULL};
+	ResPart auxReg;
+	FILE *fp = fopen("historialJuego.dat", "wb");
+
 
 	int catRandom, pregRandom;
 
@@ -40,9 +43,26 @@ int main(){
 					pregRandom = get_rand(MIN, CANTPREG);
 					if(nodoCat->info.preguntas[pregRandom].pregEnabled){
 						cout<<nodoCat->info.preguntas[pregRandom].pregunta<<": ";
+
+						cin.getline(auxReg.resp, CHARRESP);								//guardo respuesta en auxReg
+
 						nodoCat->info.preguntas[pregRandom].pregEnabled = false;
 						nodoCat->info.catEnabled--;
 						cout<<endl;
+
+						
+						strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRandom].pregunta);	//guardo pregunta en auxReg
+						
+						cout<<"imprimo resp part: "<<auxReg.resp<<endl;
+						cout<<"imprimo resp orig: "<<nodoCat->info.preguntas[pregRandom].respuesta<<endl;
+
+						if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRandom].respuesta) == 0)	//comparo respuestas
+							auxReg.esCorrecta = true;
+						//faltaria guardar hora y fecha
+						agregarNodoJuego(part[j], auxReg);
+						fwrite(&auxReg, sizeof(ResPart) ,1, fp);
+
+
 						//salgo del while
 						break;
 					}else{
@@ -58,5 +78,7 @@ int main(){
 			}
 		}
 	}
+	fclose(fp);
 	return 0;
 }
+
