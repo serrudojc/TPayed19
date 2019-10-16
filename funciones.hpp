@@ -41,19 +41,19 @@ struct ResPart{
 	int puntaje = 0; //puntaje por nodo o total?
 	char pregunta[CHARPREG];
 	char resp[CHARRESP];
-	bool esCorrecta = false;
+	char esCorrecta[CHARCATEG] = "Incorrecta";
 	char tiempo[CHARCATEG]; //no se como hacer esto aun
 };
 
-struct Participantes{
+struct NodoPart{
 	ResPart info;
-	Participantes *sig;
+	NodoPart *sig;
 };
 
 //------------------------------------------------
 
 void agregarNodo(Nodo*& lista, Categoria v);
-void agregarNodoJuego(Participantes *&lista, ResPart v);
+void agregarNodoPart(NodoPart *&lista, ResPart v);
 Categoria eliminarPrimerNodo (Nodo*& lista);
 
 //------------------------------------------------

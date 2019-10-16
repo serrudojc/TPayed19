@@ -20,15 +20,15 @@ void agregarNodo(Nodo*& lista, Categoria v){
 	}
 }
 //-------------------------------------------------------
-void agregarNodoJuego(Participantes *&lista, ResPart v){
-	Participantes* p = new Participantes(); 
+void agregarNodoPart(NodoPart *&lista, ResPart v){
+	NodoPart* p = new NodoPart(); 
 	p->info = v;
 	p->sig = NULL;
 
 	if(lista == NULL){	
 		lista = p;
 	} else {		
-		Participantes* aux = lista;
+		NodoPart* aux = lista;
 		while(aux->sig != NULL){
 			aux = aux->sig;
 		}
