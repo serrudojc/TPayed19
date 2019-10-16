@@ -27,18 +27,18 @@ struct Nodo{
 //-----------------------------------------------
 //Estructura para las respuestas de los participantes
 /*
-	_________ 		Participantes
+  Participantes
+	_________ 		NodoPart
 	|       |       _______     ______       ______
 	|       |----->|____|_|--->|____|_|---->|____|_|
 	|_______|			|       
 	|       |			|------->
 	|       |					ResPart
 	|_______|
-	part[5]
+	 part[5]
 */
 
 struct ResPart{
-	int puntaje = 0; //puntaje por nodo o total?
 	char pregunta[CHARPREG];
 	char resp[CHARRESP];
 	char esCorrecta[CHARCATEG] = "Incorrecta";
@@ -50,6 +50,17 @@ struct NodoPart{
 	NodoPart *sig;
 };
 
+struct Participantes{
+	int puntaje = 0;
+	int proxTurno = 0;		//guardo algo asi como un contador incremental
+	NodoPart *part = NULL;	//se puede hacer esto?incializar?
+};
+//------------------------------------------------
+struct Consolidado{
+	int puntaje;
+	int proxTurno;
+	ResPart info;
+};
 //------------------------------------------------
 
 void agregarNodo(Nodo*& lista, Categoria v);

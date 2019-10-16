@@ -8,16 +8,18 @@ using namespace std;
 
 int main(){
 	FILE * arch = fopen("historialJuego.dat","rb"); //ab?+?
-	ResPart reg;
-	fread(&reg, sizeof(ResPart),1,arch);
+	Consolidado reg;
+	fread(&reg, sizeof(Consolidado),1,arch);
 
 	while(!feof(arch)){
-		cout<<"Pregunta: "<<"\t\t"<<reg.pregunta<<endl;
-		cout<<"Respuesta Participante: "<<reg.resp<<endl;
-		cout<<"Es correcta?: "<<"\t\t"<<reg.esCorrecta<<endl;
+		cout<<"Pregunta: "<<"\t\t"<<reg.info.pregunta<<endl;
+		cout<<"Respuesta Participante: "<<reg.info.resp<<endl;
+		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
+		cout<<"Puntaje: "<<reg.puntaje<<endl;
+		cout<<"Próximo jugador: "<<reg.proxTurno<<endl;
 
 		cout<<endl;
-		fread(&reg, sizeof(ResPart),1,arch);
+		fread(&reg, sizeof(Consolidado),1,arch);
 	}
 	fclose(arch);
 	return 0;
