@@ -12,6 +12,7 @@ int main(){
 	fread(&reg, sizeof(Consolidado),1,arch);
 
 	while(!feof(arch)){
+		cout<<reg.info.tiempo;
 		cout<<"Pregunta: "<<"\t\t"<<reg.info.pregunta<<endl;
 		cout<<"Respuesta Participante: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;

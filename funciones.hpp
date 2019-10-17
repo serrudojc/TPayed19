@@ -76,3 +76,4 @@ int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
+char *obtenerHora(char *fechaChar);

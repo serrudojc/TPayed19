@@ -1,5 +1,8 @@
 #include <iostream>
 #include <string.h>
+#include <string>		//hora
+#include <stdlib.h>		//hora
+#include <ctime> 		//hora
 #include "funciones.hpp"
 using namespace std;
 
@@ -128,3 +131,26 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
+char *obtenerHora(char *fechaChar){
+	string fechaString;
+    //char fechaChar[CHARCATEG];
+        
+    // Declaring argument for time() 
+    time_t tt; 
+  
+    // Declaring variable to store return value of localtime() 
+    tm* ti; 
+
+    // Applying time() 
+    time (&tt); 
+  
+    // Using localtime() 
+    ti = localtime(&tt); 
+
+    fechaString = asctime(ti);
+    strcpy(fechaChar, fechaString.c_str()); //or pass &fechaString[0]
+    //cout<<fechaChar<<endl;
+     
+    return fechaChar;
+}
+//--------------------------------------------------------------------------

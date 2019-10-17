@@ -21,45 +21,57 @@ int main(){
 
 	FILE *fp = fopen("historialJuego.dat", "wb");
 
-
 	int catRdm, pregRdm;
 
-//cargo en memoria las preguntas
+	//cargo en memoria las preguntas
 	lista = leerPreguntasDat(lista);
-//	mostrar(lista); //muestra lista cargada en memoria
 
-//inicializamos semilla para generador random
+	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 	
 
-//empezamos juego. 
+	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
 	for(int i=0; i<CANTTURNO; i++){
 		for(int j=0; j<CANTPART; j++){
 			//recorro lista hasta encontrar la categoria del random
 			cout<<"[turno][jugador] i["<<i<<"]j["<<j<<"]: ";
 
+			//elijo una categoria random
 			catRdm = get_rand(MIN, cantidadNodos(lista));
+
+			//guardo el nodo encontrado para trabajar.
 			nodoCat = buscarCat(lista, catRdm);
 
+			//itero hasta encontrar una pregunta
 			while(1){
+				//pregunto si la categoria está habilitada.
 				if(nodoCat->info.catEnabled){
+					//elijo una pregunta random	
 					pregRdm = get_rand(MIN, CANTPREG);
+
+					//si la pregunta está habilitada, proceso y salgo del while. Sino, vuelvo entrar al while.
 					if(nodoCat->info.preguntas[pregRdm].pregEnabled){
 						cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": ";
+						
 						//guardo respuesta en auxReg
 						cin.getline(auxReg.resp, CHARRESP);								
+						
 						//desactivo la pregunta
 						nodoCat->info.preguntas[pregRdm].pregEnabled = false;
+						
 						//decremento la cantidad de preguntas disponibles en categoria
 						nodoCat->info.catEnabled--;
 						cout<<endl;
+						
 						//guardo pregunta en auxReg
 						strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRdm].pregunta);	
+						
 						//comparo respuestas
 						if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRdm].respuesta) == 0){	
 							participante[j].puntaje++;
 							strcpy(auxReg.esCorrecta , "Correcta");
 						}
-						//faltaria guardar hora y fecha
+						//guardo hora
+						strcpy(auxReg.tiempo, obtenerHora(auxReg.tiempo));
 
 						//guardo jugador proximo turno
 						participante[j].proxTurno =  ((j+1)%CANTPART)+1;
@@ -92,4 +104,3 @@ int main(){
 	fclose(fp);
 	return 0;
 }
-
