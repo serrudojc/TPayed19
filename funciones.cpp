@@ -154,3 +154,27 @@ char *obtenerHora(char *fechaChar){
     return fechaChar;
 }
 //--------------------------------------------------------------------------
+void ordenarBurbuja (Participantes arr[], int len){
+	Participantes aux;
+	for(int i=0; i<len-1; i++){
+		for(int j=0; j<len-1;j++){
+			if(arr[j].puntaje < arr[j+1].puntaje){
+				// funcion de swap
+				aux = arr[j];
+				arr[j] = arr[j+1];
+				arr[j+1] = aux;
+			}
+		}
+	}
+}
+//--------------------------------------------------------------------------
+void mostrar (Participantes arr[],int len){
+	for(int i=0; i<len; i++){
+		cout<<arr[i].idPart<<" "<<arr[i].nombrePart<<endl;
+		cout<<"Puntos: "<<arr[i].puntaje<<endl;
+		cout<<"Proximo turno: "<<arr[i].proxTurno<<endl<<endl;
+	}
+	cout<<endl;
+	return ;
+}
+//---------------------------------------------------------------------------

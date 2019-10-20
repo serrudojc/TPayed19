@@ -27,7 +27,14 @@ int main(){
 	lista = leerPreguntasDat(lista);
 
 	//inicializamos semilla para generador random
-	srand((int)time(NULL)); 	
+	srand((int)time(NULL)); 
+
+	//inicializo id y nombre de participantes.
+	for(int j=0; j<CANTPART; j++){
+		participante[j].idPart = j+1;
+		cout<<"Nombre participante ["<<j+1<<"]: ";
+		cin.getline(participante[j].nombrePart, CHARCATEG);
+	}
 
 	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
 	for(int i=0; i<CANTTURNO; i++){
@@ -79,6 +86,8 @@ int main(){
 						agregarNodoPart(participante[j].part, auxReg);
 
 						cons.puntaje = participante[j].puntaje;
+						cons.idPart = participante[j].idPart;
+						strcpy(cons.nombrePart, participante[j].nombrePart);
 						cons.proxTurno = participante[j].proxTurno;
 						cons.info =	auxReg;
 						fwrite(&cons, sizeof(Consolidado) ,1, fp);
@@ -99,8 +108,18 @@ int main(){
 					break;
 				}		
 			}
+			//en caso de empate tengo que seguir con los empatados
+
 		}
 	}
+	//en caso de empate, debo seguir con los empatados
+	//voy a ordenar el vector participantes de mayor a menor por puntaje
+	mostrar(participante,CANTPART);
+	cout<<endl;
+	ordenarBurbuja(participante, CANTPART);
+	mostrar(participante,CANTPART);
+	cout<<endl;
+
 	fclose(fp);
 	return 0;
 }

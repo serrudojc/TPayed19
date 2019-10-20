@@ -51,13 +51,17 @@ struct NodoPart{
 };
 
 struct Participantes{
+	int idPart;
 	int puntaje = 0;
+	char nombrePart[CHARCATEG];
 	int proxTurno = 0;		//guardo algo asi como un contador incremental
 	NodoPart *part = NULL;	//se puede hacer esto?incializar?
 };
 //------------------------------------------------
 struct Consolidado{
 	int puntaje;
+	int idPart;
+	char nombrePart[CHARCATEG];
 	int proxTurno;
 	ResPart info;
 };
@@ -77,3 +81,5 @@ int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
 char *obtenerHora(char *fechaChar);
+void ordenarBurbuja (Participantes arr[], int len);
+void mostrar (Participantes arr[],int len);
