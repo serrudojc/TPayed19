@@ -169,12 +169,22 @@ void ordenarBurbuja (Participantes arr[], int len){
 }
 //--------------------------------------------------------------------------
 void mostrar (Participantes arr[],int len){
+	cout<<"id\tPuntos\tParticipante\tSig. turno"<<endl;
 	for(int i=0; i<len; i++){
-		cout<<arr[i].idPart<<" "<<arr[i].nombrePart<<endl;
-		cout<<"Puntos: "<<arr[i].puntaje<<endl;
-		cout<<"Proximo turno: "<<arr[i].proxTurno<<endl<<endl;
+		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
+		cout<<"\t"<<arr[i].nombrePart<<"\t"<<arr[i].proxTurno<<endl;
 	}
 	cout<<endl;
 	return ;
 }
 //---------------------------------------------------------------------------
+int cantDeEmpatados(Participantes arr[], int len){
+	int mayorPuntaje = 0, cont =0;
+	for(int i=0; i<len; i++){
+		if(arr[i].puntaje>=mayorPuntaje){
+			mayorPuntaje = arr[i].puntaje;
+			cont++;
+		}
+	}
+	return cont++;
+}

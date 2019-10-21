@@ -58,6 +58,7 @@ struct Participantes{
 	NodoPart *part = NULL;	//se puede hacer esto?incializar?
 };
 //------------------------------------------------
+//estructura para guardar en archivo
 struct Consolidado{
 	int puntaje;
 	int idPart;
@@ -66,13 +67,13 @@ struct Consolidado{
 	ResPart info;
 };
 //------------------------------------------------
-
+//funciones para app de crear las preguntas
 void agregarNodo(Nodo*& lista, Categoria v);
 void agregarNodoPart(NodoPart *&lista, ResPart v);
 Categoria eliminarPrimerNodo (Nodo*& lista);
 
 //------------------------------------------------
-
+//funciones para el juego (algunas se usan en caso de debugger)
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
 Nodo *leerPreguntasDat(Nodo *&lista);
@@ -83,3 +84,4 @@ Nodo* buscarCat(Nodo* lista, int v);
 char *obtenerHora(char *fechaChar);
 void ordenarBurbuja (Participantes arr[], int len);
 void mostrar (Participantes arr[],int len);
+int cantDeEmpatados(Participantes arr[], int len);
