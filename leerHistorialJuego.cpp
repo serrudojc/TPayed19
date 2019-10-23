@@ -18,8 +18,6 @@ int main(){
 		cout<<"Respuesta Participante: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
 		cout<<"Puntaje: "<<reg.puntaje<<endl;
-		cout<<"Próximo jugador: "<<reg.proxTurno<<endl;
-
 		cout<<endl;
 		fread(&reg, sizeof(Consolidado),1,arch);
 	}

@@ -54,16 +54,14 @@ struct Participantes{
 	int idPart;
 	int puntaje = 0;
 	char nombrePart[CHARCATEG];
-	int proxTurno = 0;		//guardo algo asi como un contador incremental
 	NodoPart *part = NULL;	//se puede hacer esto?incializar?
 };
 //------------------------------------------------
 //estructura para guardar en archivo
 struct Consolidado{
-	int puntaje;
 	int idPart;
+	int puntaje;
 	char nombrePart[CHARCATEG];
-	int proxTurno;
 	ResPart info;
 };
 //------------------------------------------------
@@ -76,11 +74,13 @@ Categoria eliminarPrimerNodo (Nodo*& lista);
 //funciones para el juego (algunas se usan en caso de debugger)
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
+void inicializarParticipantes(Participantes participante[]);
 Nodo *leerPreguntasDat(Nodo *&lista);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons, FILE *fp);
 char *obtenerHora(char *fechaChar);
 void ordenarBurbuja (Participantes arr[], int len);
 void mostrar (Participantes arr[],int len);

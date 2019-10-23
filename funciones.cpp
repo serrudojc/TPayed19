@@ -83,6 +83,16 @@ void mostrarUnNodo(Nodo* lista){
 	}
 }
 //--------------------------------------------------------------------------
+void inicializarParticipantes(Participantes participante[]){
+	for(int j=0; j<CANTPART; j++){
+		participante[j].idPart = j+1;
+		cout<<"Nombre participante ["<<j+1<<"]: ";
+		cin.getline(participante[j].nombrePart, CHARCATEG);
+	}
+	cout<<endl;
+}
+
+//--------------------------------------------------------------------------
 Nodo *leerPreguntasDat(Nodo *&lista){
 	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
 	Categoria reg;
@@ -131,6 +141,68 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons, FILE *fp){
+	while(1){
+		//pregunto si la categoria está habilitada.
+		if(nodoCat->info.catEnabled){
+			//elijo una pregunta random	
+			int pregRdm = get_rand(MIN, CANTPREG);
+
+			//si la pregunta está habilitada, proceso y salgo del while. Sino, vuelvo entrar al while.
+			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
+
+				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": ";
+									
+				//guardo respuesta en auxReg
+				cin.getline(auxReg.resp, CHARRESP);								
+				
+				//desactivo la pregunta
+				nodoCat->info.preguntas[pregRdm].pregEnabled = false;
+				
+				//decremento la cantidad de preguntas disponibles en categoria
+				nodoCat->info.catEnabled--;
+				cout<<endl;
+				
+				//guardo pregunta en auxReg
+				strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRdm].pregunta);	
+				
+				//comparo respuestas
+				if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRdm].respuesta) == 0){	
+					participante[j].puntaje++;
+					strcpy(auxReg.esCorrecta , "Correcta");
+				}
+				//guardo hora
+				strcpy(auxReg.tiempo, obtenerHora(auxReg.tiempo));
+				
+				//guardo datos en un nodo, para mostrar en tiempo de ejecucion
+				agregarNodoPart(participante[j].part, auxReg);
+
+				//guardo datos en consolidado, para guardar en archivo
+				cons.puntaje = participante[j].puntaje;
+				cons.idPart = participante[j].idPart;
+				strcpy(cons.nombrePart, participante[j].nombrePart);
+				cons.info =	auxReg;
+				fwrite(&cons, sizeof(Consolidado) ,1, fp);
+
+				//reinicio resultado de pregunta
+				strcpy(auxReg.esCorrecta , "Incorrecta");
+
+				//salgo del while, encontré pregunta.
+				break;
+			}else{
+				//la pregunta random ya se usó. Busco otra preg en la categoria
+				//cout<<"Repetido: cat:"<<catRdm<<" preg:"<<pregRdm<<endl;				
+			}
+		}else{
+			//Categoria sin preguntas disponibles. vuelvo a elegir categoria
+			cout<<"categoria "<<nodoCat->info.id<<" desactivada"<<endl;
+			j--;
+			//salgo del while, no encontré prgunta disp en esta categoria.
+			break;
+		}		
+	}
+}
+//-------------------------------------------------------------------------
 char *obtenerHora(char *fechaChar){
 	string fechaString;
     //char fechaChar[CHARCATEG];
@@ -169,10 +241,10 @@ void ordenarBurbuja (Participantes arr[], int len){
 }
 //--------------------------------------------------------------------------
 void mostrar (Participantes arr[],int len){
-	cout<<"id\tPuntos\tParticipante\tSig. turno"<<endl;
+	cout<<"id\tPuntos\tParticipante"<<endl;
 	for(int i=0; i<len; i++){
 		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
-		cout<<"\t"<<arr[i].nombrePart<<"\t"<<arr[i].proxTurno<<endl;
+		cout<<"\t"<<arr[i].nombrePart<<"\t"<<endl;
 	}
 	cout<<endl;
 	return ;
