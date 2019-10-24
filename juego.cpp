@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdlib.h>			//para rand
+#include <time.h>
 #include "funciones.hpp"
 using namespace std;
 
@@ -27,7 +28,7 @@ int main(){
 
 	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 
-
+	
 	//inicializo id y nombre de participantes.
 	inicializarParticipantes(participante);
 
