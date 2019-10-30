@@ -52,33 +52,39 @@ int main(){
 	//voy a ordenar el vector participantes de mayor a menor por puntaje
 	mostrar(participante,CANTPART);
 	cout<<endl;
-	ordenarBurbuja(participante, CANTPART);
-	mostrar(participante,CANTPART);
+	//ordenarBurbuja(participante, CANTPART);
+	///mostrar(participante,CANTPART);
 
-	//tratando de seguir con los empatados.
+	//tratando de seguir con los empatados. 
 	int cantEmpat;
 	cantEmpat = cantDeEmpatados(participante, CANTPART);
 	cout<<"cantidad de empatados: "<<cantEmpat<<endl;
 	while(cantEmpat>1){
 		//proceso empatados
-		for(k=0; k<cantEmpat; k++){
-			//recorro lista hasta encontrar la categoria del random
-			cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
+		for(k=0; k<CANTPART; k++){
+			//recorro lista hasta encontrar la categoria del random, para los que tngan flag empatado
+			if(participante[k].empatado){
+				cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
 
-			//elijo una categoria random
-			catRdm = get_rand(MIN, cantidadNodos(lista));
+				//elijo una categoria random
+				catRdm = get_rand(MIN, cantidadNodos(lista));
 
-			//guardo el nodo encontrado para trabajar.
-			nodoCat = buscarCat(lista, catRdm);
+				//guardo el nodo encontrado para trabajar.
+				nodoCat = buscarCat(lista, catRdm);
 
-			//itero hasta encontrar una pregunta
-			buscarPregunta(nodoCat, participante, k, auxReg, cons, fp);			
+				//itero hasta encontrar una pregunta
+				buscarPregunta(nodoCat, participante, k, auxReg, cons, fp);	
+			}
+						
 		}
-		ordenarBurbuja(participante, CANTPART);
+		//ordenarBurbuja(participante, CANTPART);
 		mostrar(participante,CANTPART);
 		cantEmpat = cantDeEmpatados(participante, CANTPART);
 		cout<<"cantidad de empatados = "<<cantEmpat<<endl;
 	}
+
+	ordenarBurbuja(participante, CANTPART);
+	mostrar(participante,CANTPART);
 
 	fclose(fp);
 	return 0;

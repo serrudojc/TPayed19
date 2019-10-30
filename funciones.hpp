@@ -55,6 +55,8 @@ struct Participantes{
 	int puntaje = 0;
 	char nombrePart[CHARCATEG];
 	NodoPart *part = NULL;	//se puede hacer esto?incializar?
+	bool empatado = false;
+	bool sigTurno = false;
 };
 //------------------------------------------------
 //estructura para guardar en archivo

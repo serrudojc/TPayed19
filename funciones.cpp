@@ -241,10 +241,10 @@ void ordenarBurbuja (Participantes arr[], int len){
 }
 //--------------------------------------------------------------------------
 void mostrar (Participantes arr[],int len){
-	cout<<"id\tPuntos\tParticipante"<<endl;
+	cout<<"id\tPuntos\tParticipante\tEmpatado?"<<endl;
 	for(int i=0; i<len; i++){
 		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
-		cout<<"\t"<<arr[i].nombrePart<<"\t"<<endl;
+		cout<<"\t"<<arr[i].nombrePart<<"\t"<<arr[i].empatado<<endl;
 	}
 	cout<<endl;
 	return ;
@@ -255,8 +255,17 @@ int cantDeEmpatados(Participantes arr[], int len){
 	for(int i=0; i<len; i++){
 		if(arr[i].puntaje>=mayorPuntaje){
 			mayorPuntaje = arr[i].puntaje;
-			cont++;
 		}
 	}
-	return cont++;
+	//le activo el flag de empatados a los que lo están, con el mayor puntaje
+	for(int i=0; i<len; i++){
+		cout<<"if(" <<arr[i].puntaje<<" == "<<mayorPuntaje<<endl;
+		if(arr[i].puntaje == mayorPuntaje){
+			arr[i].empatado = true;
+			cont++;
+		}else{
+			arr[i].empatado = false;
+		}
+	}
+	return cont;
 }
