@@ -184,7 +184,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPar
 				strcpy(cons.nombrePart, participante[j].nombrePart);
 				cons.info =	auxReg;
 
-				FILE *fp = fopen("historialJuego.dat", "a");
+				FILE *fp = fopen("save.dat", "a");
 				fwrite(&cons, sizeof(Consolidado) ,1, fp);
 				//reinicio resultado de pregunta
 				fclose(fp);
@@ -282,7 +282,7 @@ void nuevaPartidaCargarPartida(){
 		cout<<"Elegir opción: ";
 		cin>>modalidad;
 		switch(modalidad){
-			case 0:{ FILE *fp = fopen("historialJuego.dat", "wb"); fclose(fp); break;}
+			case 0:{ FILE *fp = fopen("save.dat", "wb"); fclose(fp); break;}
 			case 1: break;
 			default: cout<<"Opción incorrecta."<<endl; break;
 		}

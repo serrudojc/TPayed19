@@ -11,6 +11,8 @@ int main(){
 	//cabeza de lista cargada desde preguntas.dat
 	Nodo *lista = NULL;
 
+	//cabeza de lista cargada desde save.dat
+
 	//puntero a estructura tipo Nodo que uso para guardar el nodo que me interesa de la lista
 	Nodo *nodoCat = NULL;
 

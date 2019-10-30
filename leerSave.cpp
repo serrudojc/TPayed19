@@ -7,7 +7,7 @@ using namespace std;
 //----------------------------------------------------
 
 int main(){
-	FILE * arch = fopen("historialJuego.dat","rb"); //ab?+?
+	FILE * arch = fopen("save.dat","rb"); //ab?+?
 	Consolidado reg;
 	fread(&reg, sizeof(Consolidado),1,arch);
 
