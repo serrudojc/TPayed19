@@ -141,7 +141,8 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons, FILE *fp){
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons){
+
 	while(1){
 		//pregunto si la categoria está habilitada.
 		if(nodoCat->info.catEnabled){
@@ -182,9 +183,12 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPar
 				cons.idPart = participante[j].idPart;
 				strcpy(cons.nombrePart, participante[j].nombrePart);
 				cons.info =	auxReg;
-				fwrite(&cons, sizeof(Consolidado) ,1, fp);
 
+				FILE *fp = fopen("historialJuego.dat", "a");
+				fwrite(&cons, sizeof(Consolidado) ,1, fp);
 				//reinicio resultado de pregunta
+				fclose(fp);
+
 				strcpy(auxReg.esCorrecta , "Incorrecta");
 
 				//salgo del while, encontré pregunta.
@@ -259,7 +263,6 @@ int cantDeEmpatados(Participantes arr[], int len){
 	}
 	//le activo el flag de empatados a los que lo están, con el mayor puntaje
 	for(int i=0; i<len; i++){
-		cout<<"if(" <<arr[i].puntaje<<" == "<<mayorPuntaje<<endl;
 		if(arr[i].puntaje == mayorPuntaje){
 			arr[i].empatado = true;
 			cont++;
@@ -269,3 +272,25 @@ int cantDeEmpatados(Participantes arr[], int len){
 	}
 	return cont;
 }
+//----------------------------------------------------------------------------
+void nuevaPartidaCargarPartida(){
+	int modalidad;
+	
+	do{
+		cout<<"[0] Nueva partida."<<endl;
+		cout<<"[1] Cargar última partida."<<endl;
+		cout<<"Elegir opción: ";
+		cin>>modalidad;
+		switch(modalidad){
+			case 0:{ FILE *fp = fopen("historialJuego.dat", "wb"); fclose(fp); break;}
+			case 1: break;
+			default: cout<<"Opción incorrecta."<<endl; break;
+		}
+
+	}while(modalidad != 0 && modalidad != 1);
+	cin.ignore();  
+}
+//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
+//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
+// parametro append, es decir, agregar al final del archivo)
+//-----------------------------------------------------------------------------

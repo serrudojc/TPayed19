@@ -19,9 +19,9 @@ int main(){
 
 	Consolidado cons;
 
-	FILE *fp = fopen("historialJuego.dat", "wb");
-
 	int catRdm, i=0, j=0, k=0;
+
+	nuevaPartidaCargarPartida();
 
 	//cargo en memoria las preguntas
 	lista = leerPreguntasDat(lista);
@@ -45,15 +45,13 @@ int main(){
 			nodoCat = buscarCat(lista, catRdm);
 
 			//itero hasta encontrar una pregunta
-			buscarPregunta(nodoCat, participante, j, auxReg, cons, fp);			
+			buscarPregunta(nodoCat, participante, j, auxReg, cons);			
 		}
 	}
 	//en caso de empate, debo seguir con los empatados
 	//voy a ordenar el vector participantes de mayor a menor por puntaje
 	mostrar(participante,CANTPART);
 	cout<<endl;
-	//ordenarBurbuja(participante, CANTPART);
-	///mostrar(participante,CANTPART);
 
 	//tratando de seguir con los empatados. 
 	int cantEmpat;
@@ -73,7 +71,7 @@ int main(){
 				nodoCat = buscarCat(lista, catRdm);
 
 				//itero hasta encontrar una pregunta
-				buscarPregunta(nodoCat, participante, k, auxReg, cons, fp);	
+				buscarPregunta(nodoCat, participante, k, auxReg, cons);	
 			}
 						
 		}
@@ -86,6 +84,5 @@ int main(){
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante,CANTPART);
 
-	fclose(fp);
 	return 0;
 }
