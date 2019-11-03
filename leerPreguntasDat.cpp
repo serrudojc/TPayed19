@@ -19,10 +19,22 @@ int main(){
 
 	do{
 		switch(opcion){
-			case 0:	{arch = fopen("preguntas.dat","rb");
-					break;}
-			case 1: {arch = fopen("preguntasSave.dat","rb");
-					break;}
+			case 0:	
+			{
+				if((arch = fopen("preguntas.dat","rb")) == NULL){
+					cout<<"Error, no se puede abrir preguntas.dat"<<endl;
+					return 1;
+				}
+				break;
+			}
+			case 1:
+			{
+				if((arch = fopen("preguntasSave.dat","rb")) == NULL){
+					cout<<"Error, no se puede abrir preguntasSave.dat"<<endl;
+					return 2;
+				}
+				break;
+			}
 			default: cout<<"opcion incorrecta"<<endl;
 		}						
 	} while (opcion != 0 && opcion != 1);

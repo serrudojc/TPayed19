@@ -18,21 +18,27 @@ int main(){
 	Participantes participante[CANTPART];
 
 	int catRdm, i=0, j=0, k=0;
+	bool flag = true;
 
 	//voy a cargar una partida o iniciar una nueva. 
-	nuevaPartidaCargarPartida(participante); cout<<endl<<endl;
-
-	//cargo en memoria las preguntas
-	lista = leerPreguntasDat(lista);
+	lista = nuevaPartidaCargarPartida(participante, lista); cout<<endl<<endl;
 
 	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 
 	
 	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
 	for(i=0; i<CANTTURNO; i++){
+		if(!flag)
+			break;
 		for(j=0; j<CANTPART; j++){
 			//recorro lista hasta encontrar la categoria del random
-			cout<<"[turno "<<i<<"]["<<participante[j].nombrePart<<"]: ";
+			cout<<"Turno nº"<<i<<" -"<<participante[j].nombrePart<<"-: ";
+
+			//verifico que haya categorias habilitadas
+			if(!verificadorCategoriasDisponibles(lista)){
+				flag = false;
+				break;
+			}
 
 			//elijo una categoria random
 			catRdm = get_rand(MIN, cantidadNodos(lista));
@@ -45,11 +51,12 @@ int main(){
 
 			//tengo que guardar la lista de preguntas 
 			guardarSaveLista(lista);
+
+			verEstado();
 		}
 	}
 	//en caso de empate, debo seguir con los empatados
-	//voy a ordenar el vector participantes de mayor a menor por puntaje
-	cout<<"***Resultados Ronda***"<<endl;
+	cout<<"\t*** Resultados Ronda ***"<<endl;
 	mostrar(participante,CANTPART);
 	cout<<endl;
 
@@ -57,11 +64,19 @@ int main(){
 	cantEmpat = cantDeEmpatados(participante, CANTPART);
 	
 	while(cantEmpat>1){
+		if(!flag)
+			break;
 		//Proceso en caso de empate
 		for(k=0; k<CANTPART; k++){
 			//busco categoria random, para participantes con flag empatado
 			if(participante[k].empatado){
 				cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
+
+				//verifico que haya categorias habilitadas
+				if(!verificadorCategoriasDisponibles(lista)){
+					flag = false;
+					break;
+				}
 
 				//elijo una categoria random
 				catRdm = get_rand(MIN, cantidadNodos(lista));
@@ -74,13 +89,19 @@ int main(){
 
 				//tengo que guardar la lista de preguntas 
 				guardarSaveLista(lista);
+
+				verEstado();
 			}				
 		}
 		mostrar(participante,CANTPART);
 		cantEmpat = cantDeEmpatados(participante, CANTPART);
 	}
 
+	if(flag)
+		cout<<"No hay más categorías disponibles."<<endl;
+	
 	//ordeno posiciones y muestro tabla de resultados
+	cout<<"\t*** Tabla de Resultados ***"<<endl;
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante,CANTPART);
 

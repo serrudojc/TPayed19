@@ -24,6 +24,18 @@ void agregarNodo(Nodo*& lista, Categoria v){
 	}
 }
 //-------------------------------------------------------
+Categoria eliminarPrimerNodo (Nodo*& lista){
+	Nodo* aux = lista; 	//como es por referencia
+	Categoria valor; 
+	strcpy(valor.categoria,"-1");	//chequear esta parte
+	if(aux != NULL){	//chequeo que no sea una lista vacia
+		valor = lista->info;
+		lista = lista->sig;
+		delete aux;
+	}
+	return valor;	//si la lista esta vacia, devuelvo -1, sino, devuelvo el valor del primer nodo
+}
+//-------------------------------------------------------
 void agregarNodoPart(NodoPart *&lista, ResPart v){
 	NodoPart* p = new NodoPart(); 
 	p->info = v;
@@ -39,49 +51,47 @@ void agregarNodoPart(NodoPart *&lista, ResPart v){
 	aux->sig = p;
 	}
 }
-//-------------------------------------------------------
-Categoria eliminarPrimerNodo (Nodo*& lista){
-	Nodo* aux = lista; 	//como es por referencia
-	Categoria valor; 
-	strcpy(valor.categoria,"-1");	//chequear esta parte
-	if(aux != NULL){	//chequeo que no sea una lista vacia
-		valor = lista->info;
-		lista = lista->sig;
-		delete aux;
-	}
-	return valor;	//si la lista esta vacia, devuelvo -1, sino, devuelvo el valor del primer nodo
-}
 //--------------------------------------------------------
-void mostrar (Nodo* lista){ 
-	Nodo *aux = lista;
-	while(aux != NULL){
-		cout<<aux->info.id<<endl;
-		cout<<aux->info.categoria<<endl;
-		cout<<aux->info.catEnabled<<endl;
-		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
+//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
+// parametro append, es decir, agregar al final del archivo)
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista){
+	int modalidad;
+	
+	do{
+		cout<<"[0] Nueva partida."<<endl;
+		cout<<"[1] Cargar última partida."<<endl;
+		cout<<"Elegir opción: ";
+		cin>>modalidad;
+		cin.ignore(); 
+		switch(modalidad){
+			case 0:{ 
+				//nueva partida: abro y cierro save.dat, sobreescribiendo si ya existia
+				FILE *fp = fopen("save.dat", "wb"); 
+				fclose(fp);
+
+				//inicializo id y nombre de participantes.
+				inicializarParticipantes(participante);  
+
+				//cargo en memoria las preguntas
+				lista = leerPreguntasDat(lista, "preguntas.dat");
+
+				break;}
+			case 1:{ 
+				//continuar partida: Tengo que abrir preguntasSave.dat 
+				//La partida continua save.dat continua con append en funcion buscarPregunta
+
+				//cargo en memoria las preguntas
+				lista = leerPreguntasDat(lista, "preguntasSave.dat");
+
+				recuperarParticipantes(participante);
+
+				break;}
+			default: cout<<"Opción incorrecta."<<endl; break;
 		}
-		cout<<endl;
-		aux = aux->sig;
-	}		
-}
-//--------------------------------------------------------------------------
-void mostrarUnNodo(Nodo* lista){ 
-	Nodo *aux = lista;
-	while(aux != NULL){
-		cout<<aux->info.id<<endl;
-		cout<<aux->info.categoria<<endl;
-		cout<<aux->info.catEnabled<<endl;
-		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
-		}
-		cout<<endl;		
-		aux = NULL;		
-	}
+
+	}while(modalidad != 0 && modalidad != 1);
+	return lista;
 }
 //--------------------------------------------------------------------------
 void inicializarParticipantes(Participantes participante[]){
@@ -92,10 +102,9 @@ void inicializarParticipantes(Participantes participante[]){
 	}
 	cout<<endl;
 }
-
 //--------------------------------------------------------------------------
-Nodo *leerPreguntasDat(Nodo *&lista){
-	FILE * arch = fopen("preguntas.dat","rb"); //ab?+?
+Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
+	FILE * arch = fopen(archivo,"rb"); //ab?+?
 	Categoria reg;
 	fread(&reg, sizeof(Categoria),1,arch);
 
@@ -107,6 +116,53 @@ Nodo *leerPreguntasDat(Nodo *&lista){
 		}
 	fclose(arch);
 	return lista;
+}
+//--------------------------------------------------------------------------
+void recuperarParticipantes(Participantes participante[]){
+	
+	FILE *fp = fopen("save.dat", "rb");
+	Consolidado reg;
+	fread(&reg, sizeof(Consolidado),1,fp);
+	while(!feof(fp)){
+		for(int t=0; t<CANTPART; t++){
+			participante[t].idPart = reg.idPart;
+			participante[t].puntaje = reg.puntaje;
+			strcpy(participante[t].nombrePart, reg.nombrePart);
+			//COMO RECUPERO LA LISTA DE PREGUNTAS RESPONDIDAS???
+			//primer intento: voy a crear 5 punteros cabeza de lista y cargar cada uno
+			agregarNodoPart(participante[t].part, reg.idPart);
+			participante[t].empatado = reg.empatado;
+			participante[t].sigTurno = reg.sigTurno;
+		}
+	cout<<endl;
+	}
+	fclose(fp);
+}
+
+void agregarNodoPart(NodoPart *&lista, int id){
+	NodoPart* p = new NodoPart(); 
+	
+	FILE *np = fopen("save.dat", "rb");
+	Consolidado reg;
+	fread(&reg, sizeof(Consolidado),1,np);
+	while(!feof(np)){
+		if (reg.idPart == id){
+			p->info = reg.info;
+			p->sig = NULL;
+
+			if(lista == NULL){	
+				lista = p;
+			} else {		
+				NodoPart* aux = lista;
+				while(aux->sig != NULL){
+					aux = aux->sig;
+				}
+			aux->sig = p;
+			}	
+		}
+		fread(&reg, sizeof(Consolidado),1,np);
+	}
+	fclose(np);
 }
 //--------------------------------------------------------------------------
 //devuelve un entero entre min y max
@@ -123,6 +179,24 @@ int cantidadNodos (Nodo* lista){
 		aux = aux->sig;
 	}
 	return contador;
+}
+//------------------------------------------------------------------------
+bool verificadorCategoriasDisponibles(Nodo *lista){
+	int cont =0;
+	Nodo *aux = lista;
+	while(aux != NULL){
+		if(!aux->info.catEnabled)
+			cont++;
+		aux = aux->sig;
+	}
+	cout<<"cantidad nodos: "<<cantidadNodos(lista)<<endl;
+	cout<<"cont: "<<cont<<endl;
+
+	if(cont == cantidadNodos(lista)){
+		cout<<"No hay categorias disponibles"<<endl;
+		return false;	
+	}
+	return true;
 }
 //-------------------------------------------------------------------------
 Nodo* buscar(Nodo* lista, int v){	
@@ -233,76 +307,6 @@ char *obtenerHora(char *fechaChar){
      
     return fechaChar;
 }
-//--------------------------------------------------------------------------
-void ordenarBurbuja (Participantes arr[], int len){
-	Participantes aux;
-	for(int i=0; i<len-1; i++){
-		for(int j=0; j<len-1;j++){
-			if(arr[j].puntaje < arr[j+1].puntaje){
-				// funcion de swap
-				aux = arr[j];
-				arr[j] = arr[j+1];
-				arr[j+1] = aux;
-			}
-		}
-	}
-}
-//--------------------------------------------------------------------------
-void mostrar (Participantes arr[],int len){
-	cout<<"id\tPuntos\tParticipante\tEmpatado?"<<endl;
-	for(int i=0; i<len; i++){
-		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
-		cout<<"\t"<<arr[i].nombrePart<<"\t"<<arr[i].empatado<<endl;
-	}
-	cout<<endl;
-	return ;
-}
-//---------------------------------------------------------------------------
-int cantDeEmpatados(Participantes arr[], int len){
-	int mayorPuntaje = 0, cont =0;
-	for(int i=0; i<len; i++){
-		if(arr[i].puntaje>=mayorPuntaje){
-			mayorPuntaje = arr[i].puntaje;
-		}
-	}
-	//le activo el flag de empatados a los que lo están, con el mayor puntaje
-	for(int i=0; i<len; i++){
-		if(arr[i].puntaje == mayorPuntaje){
-			arr[i].empatado = true;
-			cont++;
-		}else{
-			arr[i].empatado = false;
-		}
-	}
-	return cont;
-}
-//----------------------------------------------------------------------------
-//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
-//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
-// parametro append, es decir, agregar al final del archivo)
-void nuevaPartidaCargarPartida(Participantes participante[]){
-	int modalidad;
-	
-	do{
-		cout<<"[0] Nueva partida."<<endl;
-		cout<<"[1] Cargar última partida."<<endl;
-		cout<<"Elegir opción: ";
-		cin>>modalidad;
-		cin.ignore(); 
-		switch(modalidad){
-			case 0:{ 
-				FILE *fp = fopen("save.dat", "wb"); 
-				fclose(fp);
-				//inicializo id y nombre de participantes.
-				inicializarParticipantes(participante);  
-				break;}
-			case 1:{ 
-				break;}
-			default: cout<<"Opción incorrecta."<<endl; break;
-		}
-
-	}while(modalidad != 0 && modalidad != 1);
-}
 //-----------------------------------------------------------------------------
 //Guardo las preguntas ya realizadas, para que no se tengan en cuenta en caso de retomar partida
 void guardarSaveLista (Nodo* lista){ 
@@ -319,4 +323,107 @@ void guardarSaveLista (Nodo* lista){
 	}
 	fclose(pointer);		
 }
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void verEstado(){
+	string est;
+	cout<<"Ver histórico hasta el momento? [Y][N]:";
+	cin>>est;
+	cin.ignore();
+	if (est == "Y")
+		leerSave();
+	cout<<endl;
+}
+//-----------------------------------------------------------------------------
+void leerSave(){
+	FILE * arch = fopen("save.dat","rb");
+	Consolidado reg;
+	fread(&reg, sizeof(Consolidado),1,arch);
+	cout<<"--------------------------"<<endl;
+	while(!feof(arch)){
+		cout<<"Id participante:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
+		cout<<"Pregunta: "<<reg.info.pregunta<<endl;
+		cout<<"Respuesta: "<<reg.info.resp<<endl;
+		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
+		cout<<"*Puntaje: "<<reg.puntaje<<endl;
+		cout<<endl;
+		fread(&reg, sizeof(Consolidado),1,arch);
+	}
+	fclose(arch);
+	cout<<"--------------------------"<<endl;
+}
+//--------------------------------------------------------------------------
+void mostrar (Participantes arr[],int len){
+	cout<<"id\tPuntos\tParticipante"<<endl;
+	for(int i=0; i<len; i++){
+		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
+		cout<<"\t"<<arr[i].nombrePart<<"\t"<<endl;
+	}
+	cout<<endl;
+	return ;
+}
+//-------------------------------------------------------------------------------
+void mostrar (Nodo* lista){ 
+	Nodo *aux = lista;
+	while(aux != NULL){
+		cout<<aux->info.id<<endl;
+		cout<<aux->info.categoria<<endl;
+		cout<<aux->info.catEnabled<<endl;
+		for(int i=0; i<CANTPREG; i++){
+			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+		}
+		cout<<endl;
+		aux = aux->sig;
+	}		
+}
+//--------------------------------------------------------------------------
+void mostrarUnNodo(Nodo* lista){ 
+	Nodo *aux = lista;
+	while(aux != NULL){
+		cout<<aux->info.id<<endl;
+		cout<<aux->info.categoria<<endl;
+		cout<<aux->info.catEnabled<<endl;
+		for(int i=0; i<CANTPREG; i++){
+			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
+		}
+		cout<<endl;		
+		aux = NULL;		
+	}
+}
+//----------------------------------------------------------------------------
+int cantDeEmpatados(Participantes arr[], int len){
+	int mayorPuntaje = 0, cont =0;
+	for(int i=0; i<len; i++){
+		if(arr[i].puntaje>=mayorPuntaje){
+			mayorPuntaje = arr[i].puntaje;
+		}
+	}
+	//Activo flag de empatados a los que tienen el mayor puntaje
+	for(int i=0; i<len; i++){
+		if(arr[i].puntaje == mayorPuntaje){
+			arr[i].empatado = true;
+			cont++;
+		}else{
+			arr[i].empatado = false;
+		}
+	}
+	return cont;
+}
+//---------------------------------------------------------------------------
+void ordenarBurbuja (Participantes arr[], int len){
+	Participantes aux;
+	for(int i=0; i<len-1; i++){
+		for(int j=0; j<len-1;j++){
+			if(arr[j].puntaje < arr[j+1].puntaje){
+				// funcion de swap
+				aux = arr[j];
+				arr[j] = arr[j+1];
+				arr[j+1] = aux;
+			}
+		}
+	}
+}
+//--------------------------------------------------------------------------

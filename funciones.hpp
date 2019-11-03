@@ -24,6 +24,7 @@ struct Nodo{
 	Categoria info;
 	Nodo *sig;			
 };
+
 //-----------------------------------------------
 //Estructura para las respuestas de los participantes
 /*
@@ -35,7 +36,7 @@ struct Nodo{
 	|       |			|------->
 	|       |					ResPart
 	|_______|
-	 part[5]
+   participante[5]
 */
 
 struct ResPart{
@@ -58,6 +59,7 @@ struct Participantes{
 	bool empatado = false;
 	bool sigTurno = false;
 };
+
 //------------------------------------------------
 //estructura para guardar en archivo
 struct Consolidado{
@@ -65,6 +67,8 @@ struct Consolidado{
 	int puntaje;
 	char nombrePart[CHARCATEG];
 	ResPart info;
+	bool empatado = false;
+	bool sigTurno = false;
 };
 
 
@@ -73,23 +77,33 @@ struct Consolidado{
 //------------------------------------------------
 //funciones para app de crear las preguntas
 void agregarNodo(Nodo*& lista, Categoria v);
-void agregarNodoPart(NodoPart *&lista, ResPart v);
 Categoria eliminarPrimerNodo (Nodo*& lista);
+void agregarNodoPart(NodoPart *&lista, ResPart v);
 
 //------------------------------------------------
 //funciones para el juego (algunas se usan en caso de debugger, no se usan ingame)
-void mostrar (Nodo* lista);
-void mostrarUnNodo(Nodo* lista);
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista);
 void inicializarParticipantes(Participantes participante[]);
-Nodo *leerPreguntasDat(Nodo *&lista);
+Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[CHARCATEG]);
+void recuperarParticipantes(Participantes participante[]);
+void agregarNodoPart(NodoPart *&lista, int id);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
+bool verificadorCategoriasDisponibles(Nodo *lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
 void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j);
 char *obtenerHora(char *fechaChar);
-void ordenarBurbuja (Participantes arr[], int len);
-void mostrar (Participantes arr[],int len);
-int cantDeEmpatados(Participantes arr[], int len);
-void nuevaPartidaCargarPartida(Participantes participante[]);
 void guardarSaveLista(Nodo *lista);
+void verEstado();
+void leerSave();
+void mostrar (Participantes arr[],int len);
+void mostrar (Nodo* lista);
+void mostrarUnNodo(Nodo* lista);
+int cantDeEmpatados(Participantes arr[], int len);
+void ordenarBurbuja (Participantes arr[], int len);
+
+
+
+
+
