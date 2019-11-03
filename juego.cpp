@@ -8,22 +8,19 @@ using namespace std;
 
 //-------------------------------------------------------------------
 int main(){
-	//cabeza de lista cargada desde preguntas.dat
+	//declaro cabeza de lista para preguntas a realizar
 	Nodo *lista = NULL;
 
-	//cabeza de lista cargada desde save.dat
-
-	//puntero a estructura tipo Nodo que uso para guardar el nodo que me interesa de la lista
+	//puntero a struct tipo Nodo que uso para guardar el nodo que me interesa de la lista
 	Nodo *nodoCat = NULL;
 
+	//declaro array de participante tipo Participantes
 	Participantes participante[CANTPART];
-	ResPart auxReg;
-
-	Consolidado cons;
 
 	int catRdm, i=0, j=0, k=0;
 
-	nuevaPartidaCargarPartida();
+	//voy a cargar una partida o iniciar una nueva. 
+	nuevaPartidaCargarPartida(participante); cout<<endl<<endl;
 
 	//cargo en memoria las preguntas
 	lista = leerPreguntasDat(lista);
@@ -31,9 +28,6 @@ int main(){
 	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 
 	
-	//inicializo id y nombre de participantes.
-	inicializarParticipantes(participante);
-
 	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
 	for(i=0; i<CANTTURNO; i++){
 		for(j=0; j<CANTPART; j++){
@@ -47,22 +41,25 @@ int main(){
 			nodoCat = buscarCat(lista, catRdm);
 
 			//itero hasta encontrar una pregunta
-			buscarPregunta(nodoCat, participante, j, auxReg, cons);			
+			buscarPregunta(nodoCat, participante, j);
+
+			//tengo que guardar la lista de preguntas 
+			guardarSaveLista(lista);
 		}
 	}
 	//en caso de empate, debo seguir con los empatados
 	//voy a ordenar el vector participantes de mayor a menor por puntaje
+	cout<<"***Resultados Ronda***"<<endl;
 	mostrar(participante,CANTPART);
 	cout<<endl;
 
-	//tratando de seguir con los empatados. 
 	int cantEmpat;
 	cantEmpat = cantDeEmpatados(participante, CANTPART);
-	cout<<"cantidad de empatados: "<<cantEmpat<<endl;
+	
 	while(cantEmpat>1){
-		//proceso empatados
+		//Proceso en caso de empate
 		for(k=0; k<CANTPART; k++){
-			//recorro lista hasta encontrar la categoria del random, para los que tngan flag empatado
+			//busco categoria random, para participantes con flag empatado
 			if(participante[k].empatado){
 				cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
 
@@ -73,16 +70,17 @@ int main(){
 				nodoCat = buscarCat(lista, catRdm);
 
 				//itero hasta encontrar una pregunta
-				buscarPregunta(nodoCat, participante, k, auxReg, cons);	
-			}
-						
+				buscarPregunta(nodoCat, participante, k);	
+
+				//tengo que guardar la lista de preguntas 
+				guardarSaveLista(lista);
+			}				
 		}
-		//ordenarBurbuja(participante, CANTPART);
 		mostrar(participante,CANTPART);
 		cantEmpat = cantDeEmpatados(participante, CANTPART);
-		cout<<"cantidad de empatados = "<<cantEmpat<<endl;
 	}
 
+	//ordeno posiciones y muestro tabla de resultados
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante,CANTPART);
 

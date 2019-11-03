@@ -6,7 +6,7 @@
 #define CHARRESP	120
 #define CHARCATEG	30
 //------------------------------------------------
-//Estructuras para las preguntas del juego
+//Estructuras para preguntas.dat
 struct Pregunta{
 	char pregunta[CHARPREG];
 	char respuesta[CHARRESP];
@@ -66,6 +66,10 @@ struct Consolidado{
 	char nombrePart[CHARCATEG];
 	ResPart info;
 };
+
+
+
+
 //------------------------------------------------
 //funciones para app de crear las preguntas
 void agregarNodo(Nodo*& lista, Categoria v);
@@ -73,7 +77,7 @@ void agregarNodoPart(NodoPart *&lista, ResPart v);
 Categoria eliminarPrimerNodo (Nodo*& lista);
 
 //------------------------------------------------
-//funciones para el juego (algunas se usan en caso de debugger)
+//funciones para el juego (algunas se usan en caso de debugger, no se usan ingame)
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
 void inicializarParticipantes(Participantes participante[]);
@@ -82,9 +86,10 @@ int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons);
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j);
 char *obtenerHora(char *fechaChar);
 void ordenarBurbuja (Participantes arr[], int len);
 void mostrar (Participantes arr[],int len);
 int cantDeEmpatados(Participantes arr[], int len);
-void nuevaPartidaCargarPartida();
+void nuevaPartidaCargarPartida(Participantes participante[]);
+void guardarSaveLista(Nodo *lista);

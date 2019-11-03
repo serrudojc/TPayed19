@@ -3,6 +3,7 @@
 #include <string>		//hora
 #include <stdlib.h>		//hora
 #include <ctime> 		//hora
+#include <unistd.h>		//sleep
 #include "funciones.hpp"
 using namespace std;
 
@@ -141,7 +142,10 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j, ResPart &auxReg, Consolidado &cons){
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
+
+	ResPart auxReg; 
+	Consolidado cons;
 
 	while(1){
 		//pregunto si la categoria está habilitada.
@@ -273,7 +277,10 @@ int cantDeEmpatados(Participantes arr[], int len){
 	return cont;
 }
 //----------------------------------------------------------------------------
-void nuevaPartidaCargarPartida(){
+//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
+//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
+// parametro append, es decir, agregar al final del archivo)
+void nuevaPartidaCargarPartida(Participantes participante[]){
 	int modalidad;
 	
 	do{
@@ -281,16 +288,35 @@ void nuevaPartidaCargarPartida(){
 		cout<<"[1] Cargar última partida."<<endl;
 		cout<<"Elegir opción: ";
 		cin>>modalidad;
+		cin.ignore(); 
 		switch(modalidad){
-			case 0:{ FILE *fp = fopen("save.dat", "wb"); fclose(fp); break;}
-			case 1: break;
+			case 0:{ 
+				FILE *fp = fopen("save.dat", "wb"); 
+				fclose(fp);
+				//inicializo id y nombre de participantes.
+				inicializarParticipantes(participante);  
+				break;}
+			case 1:{ 
+				break;}
 			default: cout<<"Opción incorrecta."<<endl; break;
 		}
 
 	}while(modalidad != 0 && modalidad != 1);
-	cin.ignore();  
 }
-//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
-//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
-// parametro append, es decir, agregar al final del archivo)
 //-----------------------------------------------------------------------------
+//Guardo las preguntas ya realizadas, para que no se tengan en cuenta en caso de retomar partida
+void guardarSaveLista (Nodo* lista){ 
+	Nodo *aux = lista;
+	Categoria reg;
+
+	FILE *pointer = fopen("preguntasSave.dat", "wb");
+
+	while(aux != NULL){
+		
+		reg = aux->info;
+		fwrite (&reg, sizeof(Categoria), 1, pointer);
+		aux = aux->sig;
+	}
+	fclose(pointer);		
+}
+//------------------------------------------------------------------------------
