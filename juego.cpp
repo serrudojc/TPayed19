@@ -30,9 +30,10 @@ int main(){
 	for(i=0; i<CANTTURNO; i++){
 		if(!flag)
 			break;
+		cout<<"\t*** Ronda nº"<<i+1<<" ***"<<endl<<endl;
 		for(j=0; j<CANTPART; j++){
 			//recorro lista hasta encontrar la categoria del random
-			cout<<"Turno nº"<<i<<" -"<<participante[j].nombrePart<<"-: ";
+			cout<<"["<<i+1<<"] - "<<participante[j].nombrePart<<" -: "<<endl;
 
 			//verifico que haya categorias habilitadas
 			if(!verificadorCategoriasDisponibles(lista)){
@@ -51,15 +52,12 @@ int main(){
 
 			//tengo que guardar la lista de preguntas 
 			guardarSaveLista(lista);
-
-			verEstado();
 		}
 	}
 	//en caso de empate, debo seguir con los empatados
 	cout<<"\t*** Resultados Ronda ***"<<endl;
 	mostrar(participante,CANTPART);
 	cout<<endl;
-
 	int cantEmpat;
 	cantEmpat = cantDeEmpatados(participante, CANTPART);
 	
@@ -89,21 +87,22 @@ int main(){
 
 				//tengo que guardar la lista de preguntas 
 				guardarSaveLista(lista);
-
-				verEstado();
 			}				
 		}
+		cout<<"\t*** Resultados Desempate***"<<endl;
 		mostrar(participante,CANTPART);
+		cout<<endl;
 		cantEmpat = cantDeEmpatados(participante, CANTPART);
 	}
 
-	if(flag)
-		cout<<"No hay más categorías disponibles."<<endl;
-	
+	if(!flag)
+		cout<<"!!! No hay más categorías disponibles."<<endl<<endl;
+
 	//ordeno posiciones y muestro tabla de resultados
 	cout<<"\t*** Tabla de Resultados ***"<<endl;
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante,CANTPART);
+	cout<<endl;
 
 	return 0;
 }

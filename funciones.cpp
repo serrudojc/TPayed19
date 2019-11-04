@@ -4,6 +4,7 @@
 #include <stdlib.h>		//hora
 #include <ctime> 		//hora
 #include <unistd.h>		//sleep
+#include <iomanip>		//setw
 #include "funciones.hpp"
 using namespace std;
 
@@ -189,9 +190,6 @@ bool verificadorCategoriasDisponibles(Nodo *lista){
 			cont++;
 		aux = aux->sig;
 	}
-	cout<<"cantidad nodos: "<<cantidadNodos(lista)<<endl;
-	cout<<"cont: "<<cont<<endl;
-
 	if(cont == cantidadNodos(lista)){
 		cout<<"No hay categorias disponibles"<<endl;
 		return false;	
@@ -230,7 +228,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 			//si la pregunta está habilitada, proceso y salgo del while. Sino, vuelvo entrar al while.
 			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
 
-				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": ";
+				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": "<<endl;
 									
 				//guardo respuesta en auxReg
 				cin.getline(auxReg.resp, CHARRESP);								
@@ -240,7 +238,6 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 				
 				//decremento la cantidad de preguntas disponibles en categoria
 				nodoCat->info.catEnabled--;
-				cout<<endl;
 				
 				//guardo pregunta en auxReg
 				strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRdm].pregunta);	
@@ -269,6 +266,8 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 
 				strcpy(auxReg.esCorrecta , "Incorrecta");
 
+				verEstado();
+
 				//salgo del while, encontré pregunta.
 				break;
 			}else{
@@ -277,7 +276,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 			}
 		}else{
 			//Categoria sin preguntas disponibles. vuelvo a elegir categoria
-			cout<<"categoria "<<nodoCat->info.id<<" desactivada"<<endl;
+			//cout<<"categoria "<<nodoCat->info.id<<" desactivada"<<endl;
 			j--;
 			//salgo del while, no encontré prgunta disp en esta categoria.
 			break;
@@ -326,10 +325,10 @@ void guardarSaveLista (Nodo* lista){
 //-----------------------------------------------------------------------------
 void verEstado(){
 	string est;
-	cout<<"Ver histórico hasta el momento? [Y][N]:";
+	cout<<"Ver histórico hasta el momento? [y][n]:";
 	cin>>est;
 	cin.ignore();
-	if (est == "Y")
+	if (est == "y" || est == "Y")
 		leerSave();
 	cout<<endl;
 }
@@ -352,6 +351,7 @@ void leerSave(){
 	cout<<"--------------------------"<<endl;
 }
 //--------------------------------------------------------------------------
+/*
 void mostrar (Participantes arr[],int len){
 	cout<<"id\tPuntos\tParticipante"<<endl;
 	for(int i=0; i<len; i++){
@@ -360,6 +360,15 @@ void mostrar (Participantes arr[],int len){
 	}
 	cout<<endl;
 	return ;
+}
+*/
+void mostrar (Participantes arr[],int len){
+	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
+	cout<<setw(5)<<"id"<<setw(8)<<"Puntaje"<<setw(25)<<"Participante"<<endl;
+	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
+	for(int i=0; i<len; i++){
+		cout<<setw(5)<<arr[i].idPart<<setw(5)<<arr[i].puntaje<<setw(28)<<arr[i].nombrePart<<endl;
+	}
 }
 //-------------------------------------------------------------------------------
 void mostrar (Nodo* lista){ 
