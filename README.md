@@ -36,3 +36,29 @@ Restricciones:
 - El contenido de los archivos debe entregarse explicitado en un archivo “.xls”.
 - Se debe utilizar para la resolución de este trabajo por lo menos un vector y una estructura dinámica.
 
+
+
+# USO DEL PROGRAMA
+### Archivos make
+El projecto tiene archivos make usados para facilitar la compilacion en la terminal. No se usan en caso de compilarse en un IDE.
+Ejemplo de uso
+`make -f MakeGenPreg`
+Me genera el ejecutable genPreg
+Para limpiar (borrar) se puede ejecutar
+`make -f MakeGenPreg clean`
+
+
+### Carga de preguntas y respuestas iniciales.
+Compilando y ejecutando (hablo desde terminal de Ubuntu) `./genPreg` se accede al programa para la inicialización de preguntas.
+Ejecutando `./genPreg<textoPrueba` se carga directamente el txt sin necesidad de estar tipeando en la consola (armar un txt aparte con las categorias, preguntas y respuestas). 
+Se me genera un archivo **preguntas.dat**
+
+### Lectura de los archivos preguntas.dat y preguntasSave.dat
+Si es necesario leer el contenido de las preguntas, se realizó un programa para tal acción, que se compila con `make -f MakeLeerPreguntasDat`
+Se puede leer tanto el **preguntas.dat** con las preguntas en crudo como el **preguntasSave.dat**, que básicamente es el mismo archivo, pero con las preguntas que ya fueron realizadas en la partida, deshabilitadas, de manera que si se retorma la partida, no se vuelvan a realizar las mismas preguntas.
+
+# El JUEGO 
+Para ejecutar el juego, se compila desde la termina `make -f Makejuego` y se ejecuta `./juego`.
+El juego consta de 5 turnos con 5 jugadores. 
+En caso de no haber un ganador en estos ciclos, se procederá a un desempate con los jugadores empatados
+Para saber quienes son los empatados, cada jugador tiene una bandera de **empatado** la cual está por defecto en **false**. Una vez terminada la ronda básica, una función **cantDeEmpatados** guarda el mayor puntaje, para luego comparar los jugadores que tengan ese mismo puntaje y asignar **true** a la bandera.
