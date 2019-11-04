@@ -40,21 +40,28 @@ Restricciones:
 
 # USO DEL PROGRAMA
 ### Archivos make
-El projecto tiene archivos make usados para facilitar la compilacion en la terminal. No se usan en caso de compilarse en un IDE.
+El projecto tiene archivos make usados para facilitar la compilacion en la terminal de Ubuntu. No se usan en caso de compilarse en un IDE.
 Ejemplo de uso
-`make -f MakeGenPreg`
+
+`make -f MakeGenPreg`.
+
 Me genera el ejecutable genPreg
+
 Para limpiar (borrar) se puede ejecutar
+
 `make -f MakeGenPreg clean`
 
 
 ### Carga de preguntas y respuestas iniciales.
-Compilando y ejecutando (hablo desde terminal de Ubuntu) `./genPreg` se accede al programa para la inicialización de preguntas.
+Ejecutando desde la terminal `./genPreg` se accede al programa para la inicialización de preguntas.
+
 Ejecutando `./genPreg<textoPrueba` se carga directamente el txt sin necesidad de estar tipeando en la consola (armar un txt aparte con las categorias, preguntas y respuestas). 
-Se me genera un archivo **preguntas.dat**
+
+Se genera un archivo **preguntas.dat**
 
 ### Lectura de los archivos preguntas.dat y preguntasSave.dat
 Si es necesario leer el contenido de las preguntas, se realizó un programa para tal acción, que se compila con `make -f MakeLeerPreguntasDat`
+
 Se puede leer tanto el **preguntas.dat** con las preguntas en crudo como el **preguntasSave.dat**, que básicamente es el mismo archivo, pero con las preguntas que ya fueron realizadas en la partida, deshabilitadas, de manera que si se retorma la partida, no se vuelvan a realizar las mismas preguntas.
 
 # El JUEGO 
