@@ -1,9 +1,9 @@
-#define CANTPREG 	5
-#define CANTTURNO	3
-#define CANTPART 	4
+#define CANTPREG 	6
+#define CANTTURNO	5
+#define CANTPART 	5
 #define MIN 		0
-#define CHARPREG	120
-#define CHARRESP	120
+#define CHARPREG	140
+#define CHARRESP	140
 #define CHARCATEG	30
 //------------------------------------------------
 //Estructuras para preguntas.dat

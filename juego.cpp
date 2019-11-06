@@ -56,7 +56,7 @@ int main(){
 			if(!flagCatDisp)
 				break;
 			
-			cout<<"\t*** Ronda nº"<<i+1<<" ***"<<endl<<endl;
+			cout<<"\t- - - - - - - Ronda nº"<<i+1<<" - - - - - - -"<<endl<<endl;
 
 			for(j=0; j<CANTPART; j++){
 				//en caso de cargar partida, voy a cargar el iterador j para continuar
@@ -131,7 +131,7 @@ int main(){
 				}
 			}				
 		}
-		cout<<"\t*** Resultados Desempate***"<<endl;
+		cout<<"\n\t*** Resultados Desempate ***"<<endl;
 		mostrar(participante,CANTPART);
 		cout<<endl;
 		cantEmpat = cantDeEmpatados(participante);
@@ -141,7 +141,7 @@ int main(){
 		cout<<"!!! No hay más categorías disponibles."<<endl<<endl;
 
 	//ordeno posiciones y muestro tabla de resultados
-	cout<<"\t*** Tabla de Resultados ***"<<endl;
+	cout<<"\n\t*** Tabla de Resultados ***"<<endl;
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante,CANTPART);
 	cout<<endl;

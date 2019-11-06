@@ -320,7 +320,7 @@ void leerSave(){
 	FILE * arch = fopen("save.dat","rb");
 	Participantes reg;
 	fread(&reg, sizeof(Participantes),1,arch);
-	cout<<"--------------------------"<<endl;
+	cout<<"\n\t#############   HISTORIAL   ##################"<<endl;
 	while(!feof(arch)){
 		cout<<"Id participante:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
 		cout<<"Pregunta: "<<reg.info.pregunta<<endl;
@@ -333,7 +333,7 @@ void leerSave(){
 		fread(&reg, sizeof(Participantes),1,arch);
 	}
 	fclose(arch);
-	cout<<"--------------------------"<<endl;
+	cout<<"\t##############################################"<<endl;
 }
 //--------------------------------------------------------------------------
 
