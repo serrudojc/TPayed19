@@ -21,17 +21,21 @@ int main(){
 	bool flag = true;
 
 	//voy a cargar una partida o iniciar una nueva. 
-	lista = nuevaPartidaCargarPartida(participante, lista); cout<<endl<<endl;
+	lista = nuevaPartidaCargarPartida(participante, lista, i, j, k); 
+
+	cout<<"valor de i="<<i<<endl;
+	cout<<"valor de j="<<j<<endl;
+	cout<<"valor de k="<<k<<endl;
 
 	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 
 	
 	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
-	for(i=0; i<CANTTURNO; i++){
+	for(i; i<CANTTURNO; i++){
 		if(!flag)
 			break;
 		cout<<"\t*** Ronda nº"<<i+1<<" ***"<<endl<<endl;
-		for(j=0; j<CANTPART; j++){
+		for(j; j<CANTPART; j++){
 			//recorro lista hasta encontrar la categoria del random
 			cout<<"["<<i+1<<"] - "<<participante[j].nombrePart<<" -: "<<endl;
 
@@ -48,7 +52,7 @@ int main(){
 			nodoCat = buscarCat(lista, catRdm);
 
 			//itero hasta encontrar una pregunta
-			buscarPregunta(nodoCat, participante, j);
+			buscarPregunta(nodoCat, participante, i, j, k);
 
 			//tengo que guardar la lista de preguntas 
 			guardarSaveLista(lista);
@@ -64,8 +68,9 @@ int main(){
 	while(cantEmpat>1){
 		if(!flag)
 			break;
+		
 		//Proceso en caso de empate
-		for(k=0; k<CANTPART; k++){
+		for(k; k<CANTPART; k++){
 			//busco categoria random, para participantes con flag empatado
 			if(participante[k].empatado){
 				cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
@@ -83,7 +88,7 @@ int main(){
 				nodoCat = buscarCat(lista, catRdm);
 
 				//itero hasta encontrar una pregunta
-				buscarPregunta(nodoCat, participante, k);	
+				buscarPregunta(nodoCat, participante, i, j, k);	
 
 				//tengo que guardar la lista de preguntas 
 				guardarSaveLista(lista);

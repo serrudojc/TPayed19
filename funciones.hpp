@@ -28,13 +28,11 @@ struct Nodo{
 //-----------------------------------------------
 //Estructura para las respuestas de los participantes
 /*
-  Participantes
-	_________ 		NodoPart
-	|       |       _______     ______       ______
-	|       |----->|____|_|--->|____|_|---->|____|_|
-	|_______|			|       
-	|       |			|------->
-	|       |					ResPart
+   Participantes
+	_________ 		 
+	|_______|			       
+	|       |			
+	|       |					
 	|_______|
    participante[5]
 */
@@ -45,23 +43,28 @@ struct ResPart{
 	char esCorrecta[CHARCATEG] = "Incorrecta";
 	char tiempo[CHARCATEG]; //no se como hacer esto aun
 };
-
+/*
 struct NodoPart{
 	ResPart info;
 	NodoPart *sig;
-};
+};*/
 
 struct Participantes{
 	int idPart;
 	int puntaje = 0;
 	char nombrePart[CHARCATEG];
-	NodoPart *part = NULL;	//se puede hacer esto?incializar?
+	ResPart info;	
 	bool empatado = false;
+	bool rondaEmpate = false;
 	bool sigTurno = false;
+	int i;
+	int j;
+	int k;
 };
 
 //------------------------------------------------
 //estructura para guardar en archivo
+/*
 struct Consolidado{
 	int idPart;
 	int puntaje;
@@ -70,7 +73,7 @@ struct Consolidado{
 	bool empatado = false;
 	bool sigTurno = false;
 };
-
+*/
 
 
 
@@ -78,21 +81,19 @@ struct Consolidado{
 //funciones para app de crear las preguntas
 void agregarNodo(Nodo*& lista, Categoria v);
 Categoria eliminarPrimerNodo (Nodo*& lista);
-void agregarNodoPart(NodoPart *&lista, ResPart v);
 
 //------------------------------------------------
 //funciones para el juego (algunas se usan en caso de debugger, no se usan ingame)
-Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista);
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, int &i, int &j, int &k);
 void inicializarParticipantes(Participantes participante[]);
 Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[CHARCATEG]);
-void recuperarParticipantes(Participantes participante[]);
-void agregarNodoPart(NodoPart *&lista, int id);
+void recuperarParticipantes(Participantes participante[], int &i, int &j, int &k);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 bool verificadorCategoriasDisponibles(Nodo *lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j);
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j, int k);
 char *obtenerHora(char *fechaChar);
 void guardarSaveLista(Nodo *lista);
 void verEstado();

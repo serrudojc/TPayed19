@@ -37,26 +37,10 @@ Categoria eliminarPrimerNodo (Nodo*& lista){
 	return valor;	//si la lista esta vacia, devuelvo -1, sino, devuelvo el valor del primer nodo
 }
 //-------------------------------------------------------
-void agregarNodoPart(NodoPart *&lista, ResPart v){
-	NodoPart* p = new NodoPart(); 
-	p->info = v;
-	p->sig = NULL;
-
-	if(lista == NULL){	
-		lista = p;
-	} else {		
-		NodoPart* aux = lista;
-		while(aux->sig != NULL){
-			aux = aux->sig;
-		}
-	aux->sig = p;
-	}
-}
-//--------------------------------------------------------
 //elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
 //o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
 // parametro append, es decir, agregar al final del archivo)
-Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista){
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, int &i, int &j, int &k){
 	int modalidad;
 	
 	do{
@@ -85,7 +69,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista){
 				//cargo en memoria las preguntas
 				lista = leerPreguntasDat(lista, "preguntasSave.dat");
 
-				recuperarParticipantes(participante);
+				recuperarParticipantes(participante, i, j, k);
 
 				break;}
 			default: cout<<"Opción incorrecta."<<endl; break;
@@ -119,52 +103,29 @@ Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
 	return lista;
 }
 //--------------------------------------------------------------------------
-void recuperarParticipantes(Participantes participante[]){
+void recuperarParticipantes(Participantes participante[], int &i, int &j, int &k){
 	
 	FILE *fp = fopen("save.dat", "rb");
-	Consolidado reg;
-	fread(&reg, sizeof(Consolidado),1,fp);
+	Participantes reg;
+	fread(&reg, sizeof(Participantes),1,fp);
 	while(!feof(fp)){
 		for(int t=0; t<CANTPART; t++){
-			participante[t].idPart = reg.idPart;
-			participante[t].puntaje = reg.puntaje;
-			strcpy(participante[t].nombrePart, reg.nombrePart);
-			//COMO RECUPERO LA LISTA DE PREGUNTAS RESPONDIDAS???
-			//primer intento: voy a crear 5 punteros cabeza de lista y cargar cada uno
-			agregarNodoPart(participante[t].part, reg.idPart);
-			participante[t].empatado = reg.empatado;
-			participante[t].sigTurno = reg.sigTurno;
+
+			participante[t] = reg;
+			i = participante[t].i;
+			j = participante[t].j;
+			k = participante[t].k;
+
+			sleep(1);
+			cout<<"dentro del for ["<<t<<"]"<<endl;
+			
+			fread(&reg, sizeof(Participantes),1,fp);
 		}
 	cout<<endl;
 	}
 	fclose(fp);
 }
 
-void agregarNodoPart(NodoPart *&lista, int id){
-	NodoPart* p = new NodoPart(); 
-	
-	FILE *np = fopen("save.dat", "rb");
-	Consolidado reg;
-	fread(&reg, sizeof(Consolidado),1,np);
-	while(!feof(np)){
-		if (reg.idPart == id){
-			p->info = reg.info;
-			p->sig = NULL;
-
-			if(lista == NULL){	
-				lista = p;
-			} else {		
-				NodoPart* aux = lista;
-				while(aux->sig != NULL){
-					aux = aux->sig;
-				}
-			aux->sig = p;
-			}	
-		}
-		fread(&reg, sizeof(Consolidado),1,np);
-	}
-	fclose(np);
-}
 //--------------------------------------------------------------------------
 //devuelve un entero entre min y max
 int get_rand(int min, int max){
@@ -214,23 +175,25 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j, int k){
 
 	ResPart auxReg; 
-	Consolidado cons;
+	Participantes cons;
 
 	while(1){
 		//pregunto si la categoria está habilitada.
 		if(nodoCat->info.catEnabled){
+			
 			//elijo una pregunta random	
 			int pregRdm = get_rand(MIN, CANTPREG);
 
-			//si la pregunta está habilitada, proceso y salgo del while. Sino, vuelvo entrar al while.
+			//si la pregunta está habilitada, proceso y salgo del while. Sino, sigo en el while
 			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
-
+				
+				//realizo la pregunta
 				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": "<<endl;
 									
-				//guardo respuesta en auxReg
+				//guardo respuesta en auxReg (tipo ResPart)
 				cin.getline(auxReg.resp, CHARRESP);								
 				
 				//desactivo la pregunta
@@ -250,25 +213,26 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 				//guardo hora
 				strcpy(auxReg.tiempo, obtenerHora(auxReg.tiempo));
 				
-				//guardo datos en un nodo, para mostrar en tiempo de ejecucion
-				agregarNodoPart(participante[j].part, auxReg);
 
-				//guardo datos en consolidado, para guardar en archivo
+				//preparo datos para guardar en archivo
 				cons.puntaje = participante[j].puntaje;
 				cons.idPart = participante[j].idPart;
 				strcpy(cons.nombrePart, participante[j].nombrePart);
 				cons.info =	auxReg;
+				cons.i = i;
+				cons.j = j;
+				cons.k = k;
 
+				//abro archivo (para tener siempre el ultimo guardado)
 				FILE *fp = fopen("save.dat", "a");
-				fwrite(&cons, sizeof(Consolidado) ,1, fp);
-				//reinicio resultado de pregunta
+				fwrite(&cons, sizeof(Participantes) ,1, fp);
 				fclose(fp);
 
+				//reinicio estado de pregunta
 				strcpy(auxReg.esCorrecta , "Incorrecta");
 
 				verEstado();
 
-				//salgo del while, encontré pregunta.
 				break;
 			}else{
 				//la pregunta random ya se usó. Busco otra preg en la categoria
@@ -278,7 +242,6 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 			//Categoria sin preguntas disponibles. vuelvo a elegir categoria
 			//cout<<"categoria "<<nodoCat->info.id<<" desactivada"<<endl;
 			j--;
-			//salgo del while, no encontré prgunta disp en esta categoria.
 			break;
 		}		
 	}
@@ -286,7 +249,6 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[] ,int &j){
 //-------------------------------------------------------------------------
 char *obtenerHora(char *fechaChar){
 	string fechaString;
-    //char fechaChar[CHARCATEG];
         
     // Declaring argument for time() 
     time_t tt; 
@@ -335,8 +297,8 @@ void verEstado(){
 //-----------------------------------------------------------------------------
 void leerSave(){
 	FILE * arch = fopen("save.dat","rb");
-	Consolidado reg;
-	fread(&reg, sizeof(Consolidado),1,arch);
+	Participantes reg;
+	fread(&reg, sizeof(Participantes),1,arch);
 	cout<<"--------------------------"<<endl;
 	while(!feof(arch)){
 		cout<<"Id participante:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
@@ -344,24 +306,15 @@ void leerSave(){
 		cout<<"Respuesta: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
 		cout<<"*Puntaje: "<<reg.puntaje<<endl;
+		cout<<"i="<<i<<", j="<<j<<", k="<<k<<endl;
 		cout<<endl;
-		fread(&reg, sizeof(Consolidado),1,arch);
+		fread(&reg, sizeof(Participantes),1,arch);
 	}
 	fclose(arch);
 	cout<<"--------------------------"<<endl;
 }
 //--------------------------------------------------------------------------
-/*
-void mostrar (Participantes arr[],int len){
-	cout<<"id\tPuntos\tParticipante"<<endl;
-	for(int i=0; i<len; i++){
-		cout<<arr[i].idPart<<"\t"<<arr[i].puntaje;
-		cout<<"\t"<<arr[i].nombrePart<<"\t"<<endl;
-	}
-	cout<<endl;
-	return ;
-}
-*/
+
 void mostrar (Participantes arr[],int len){
 	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
 	cout<<setw(5)<<"id"<<setw(8)<<"Puntaje"<<setw(25)<<"Participante"<<endl;
