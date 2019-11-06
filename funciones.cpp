@@ -306,7 +306,7 @@ void leerSave(){
 		cout<<"Respuesta: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
 		cout<<"*Puntaje: "<<reg.puntaje<<endl;
-		cout<<"i="<<i<<", j="<<j<<", k="<<k<<endl;
+		cout<<"i="<<reg.i<<", j="<<reg.j<<", k="<<reg.k<<endl;
 		cout<<endl;
 		fread(&reg, sizeof(Participantes),1,arch);
 	}
