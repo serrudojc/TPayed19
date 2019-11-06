@@ -37,16 +37,13 @@ Categoria eliminarPrimerNodo (Nodo*& lista){
 	return valor;	//si la lista esta vacia, devuelvo -1, sino, devuelvo el valor del primer nodo
 }
 //-------------------------------------------------------
-//elijo entre comenzar una partida nueva (sobreescribo una partida anterior)
-//o cargar una partida (no hago nada, pq la funcion de buscarPartida tiene un fopen con
-// parametro append, es decir, agregar al final del archivo)
-Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, int &i, int &j, int &k){
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool &partidaCargada, int &I, int &J){
 	int modalidad;
 	
 	do{
-		cout<<"[0] Nueva partida."<<endl;
-		cout<<"[1] Cargar última partida."<<endl;
-		cout<<"Elegir opción: ";
+		cout<<"\t\t[0] Nueva partida."<<endl;
+		cout<<"\t\t[1] Cargar última partida."<<endl;
+		cout<<"Elegir opción..: ";
 		cin>>modalidad;
 		cin.ignore(); 
 		switch(modalidad){
@@ -64,13 +61,13 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, int &
 				break;}
 			case 1:{ 
 				//continuar partida: Tengo que abrir preguntasSave.dat 
-				//La partida continua save.dat continua con append en funcion buscarPregunta
+				//La partida continua save.dat continua con append en funcion buscarPregunta, asi q no hago nada
 
 				//cargo en memoria las preguntas
 				lista = leerPreguntasDat(lista, "preguntasSave.dat");
 
-				recuperarParticipantes(participante, i, j, k);
-
+				recuperarParticipantes(participante, I, J);
+				partidaCargada = true;
 				break;}
 			default: cout<<"Opción incorrecta."<<endl; break;
 		}
@@ -89,7 +86,7 @@ void inicializarParticipantes(Participantes participante[]){
 }
 //--------------------------------------------------------------------------
 Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
-	FILE * arch = fopen(archivo,"rb"); //ab?+?
+	FILE * arch = fopen(archivo,"rb"); 
 	Categoria reg;
 	fread(&reg, sizeof(Categoria),1,arch);
 
@@ -103,27 +100,48 @@ Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
 	return lista;
 }
 //--------------------------------------------------------------------------
-void recuperarParticipantes(Participantes participante[], int &i, int &j, int &k){
-	
+void recuperarParticipantes(Participantes participante[], int &I, int &J){
+	int t=0;
 	FILE *fp = fopen("save.dat", "rb");
 	Participantes reg;
 	fread(&reg, sizeof(Participantes),1,fp);
 	while(!feof(fp)){
-		for(int t=0; t<CANTPART; t++){
-
+		if(t<CANTPART){
 			participante[t] = reg;
-			i = participante[t].i;
-			j = participante[t].j;
-			k = participante[t].k;
-
-			sleep(1);
-			cout<<"dentro del for ["<<t<<"]"<<endl;
-			
-			fread(&reg, sizeof(Participantes),1,fp);
-		}
+			I = participante[t].i;
+			J = participante[t].j;
+			//cout<<"\tparticipante["<<t<<"]."<<reg.i<<" "<<reg.j<<endl;
+			t++;
+		}else{
+			t=0;
+			participante[t] = reg;
+			I = participante[t].i;
+			J = participante[t].j;
+			//cout<<"\tparticipante["<<t<<"]."<<reg.i<<" "<<reg.j<<endl;
+			t++;
+		}	
+		fread(&reg, sizeof(Participantes),1,fp);
+	}
+	//cout<<"devuelvo I="<<I<<" J="<<J<<" en recuperarParticipantes()"<<endl;
+	//cout<<"participante["<<t-1<<"].rondaEmpate: "<<participante[t-1].rondaEmpate<<endl;
 	cout<<endl;
+	fclose(fp);
+}
+
+bool verificarEmpatados(Participantes participante[]){
+	int t=0;
+	bool hayEmpatados = false;
+	FILE *fp = fopen("save.dat", "rb");
+	Participantes reg;
+	fread(&reg, sizeof(Participantes),1,fp);
+	while(!feof(fp)){
+		if(reg.rondaEmpate){
+			hayEmpatados = true;
+		}	
+		fread(&reg, sizeof(Participantes),1,fp);
 	}
 	fclose(fp);
+	return hayEmpatados;
 }
 
 //--------------------------------------------------------------------------
@@ -158,15 +176,6 @@ bool verificadorCategoriasDisponibles(Nodo *lista){
 	return true;
 }
 //-------------------------------------------------------------------------
-Nodo* buscar(Nodo* lista, int v){	
-	Nodo* aux;
-	aux=lista;	
-	while((aux != NULL)&&(aux->info.id != v) ){	
-		aux = aux->sig;
-	}
-	return aux;
-}
-//-------------------------------------------------------------------------
 Nodo* buscarCat(Nodo* lista, int v){	
 	Nodo* aux = lista;	
 	while((aux != NULL) && (aux->info.id != v) ){	
@@ -175,7 +184,7 @@ Nodo* buscarCat(Nodo* lista, int v){
 	return aux;
 }
 //-------------------------------------------------------------------------
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j, int k){
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j){
 
 	ResPart auxReg; 
 	Participantes cons;
@@ -183,15 +192,14 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j,
 	while(1){
 		//pregunto si la categoria está habilitada.
 		if(nodoCat->info.catEnabled){
-			
 			//elijo una pregunta random	
 			int pregRdm = get_rand(MIN, CANTPREG);
 
 			//si la pregunta está habilitada, proceso y salgo del while. Sino, sigo en el while
 			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
-				
 				//realizo la pregunta
 				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": "<<endl;
+				cout<<":> ";
 									
 				//guardo respuesta en auxReg (tipo ResPart)
 				cin.getline(auxReg.resp, CHARRESP);								
@@ -204,24 +212,37 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j,
 				
 				//guardo pregunta en auxReg
 				strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRdm].pregunta);	
-				
 				//comparo respuestas
 				if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRdm].respuesta) == 0){	
 					participante[j].puntaje++;
 					strcpy(auxReg.esCorrecta , "Correcta");
+					//en caso de empate, marco flag empatado con true, para saber q este jugador ya respondió
+					if(participante[j].rondaEmpate)
+						participante[j].empatado = true;
 				}
 				//guardo hora
 				strcpy(auxReg.tiempo, obtenerHora(auxReg.tiempo));
-				
 
 				//preparo datos para guardar en archivo
 				cons.puntaje = participante[j].puntaje;
 				cons.idPart = participante[j].idPart;
 				strcpy(cons.nombrePart, participante[j].nombrePart);
 				cons.info =	auxReg;
+				cons.empatado = participante[j].empatado;
+				cons.rondaEmpate = participante[j].rondaEmpate;
+				
+				//guardo el valor de j
+				int h = j;
+				if(h<CANTPART-1){
+					h++;
+				}else{
+					h = 0;
+					i++;
+				}
+
+				//guardo próximo turno
 				cons.i = i;
-				cons.j = j;
-				cons.k = k;
+				cons.j = h;
 
 				//abro archivo (para tener siempre el ultimo guardado)
 				FILE *fp = fopen("save.dat", "a");
@@ -305,8 +326,9 @@ void leerSave(){
 		cout<<"Pregunta: "<<reg.info.pregunta<<endl;
 		cout<<"Respuesta: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
-		cout<<"*Puntaje: "<<reg.puntaje<<endl;
-		cout<<"i="<<reg.i<<", j="<<reg.j<<", k="<<reg.k<<endl;
+		cout<<"# Puntaje: "<<reg.puntaje<<endl;
+		cout<<"i="<<reg.i<<", j="<<reg.j<<endl;
+		cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
 		cout<<endl;
 		fread(&reg, sizeof(Participantes),1,arch);
 	}
@@ -356,22 +378,40 @@ void mostrarUnNodo(Nodo* lista){
 	}
 }
 //----------------------------------------------------------------------------
-int cantDeEmpatados(Participantes arr[], int len){
+/* Los empatados tienen dos flags: 
+participante[].rondaEmpate que significa que está en una ronda de desempate y hasta que 
+todos hayan respondido, seguiran en la ronda.
+participante[].empatado significa que dentro de la ronda, respondió bien y sigue.
+*/
+
+int cantDeEmpatados(Participantes arr[]){
 	int mayorPuntaje = 0, cont =0;
-	for(int i=0; i<len; i++){
+	Participantes cons;
+
+	for(int i=0; i<CANTPART; i++){
 		if(arr[i].puntaje>=mayorPuntaje){
 			mayorPuntaje = arr[i].puntaje;
 		}
 	}
 	//Activo flag de empatados a los que tienen el mayor puntaje
-	for(int i=0; i<len; i++){
+	for(int i=0; i<CANTPART; i++){
 		if(arr[i].puntaje == mayorPuntaje){
-			arr[i].empatado = true;
+			arr[i].rondaEmpate = true;
 			cont++;
 		}else{
-			arr[i].empatado = false;
+			arr[i].rondaEmpate = false;
 		}
+		strcpy(arr[i].info.resp,"*** Guardado flags de empatados ***");
+		arr[i].empatado = false;	
 	}
+
+	FILE *fp = fopen("save.dat", "a");
+	for(int i=0; i<CANTPART; i++){
+		cons = arr[i];
+		fwrite(&cons, sizeof(Participantes) ,1, fp);
+	}
+	fclose(fp);
+
 	return cont;
 }
 //---------------------------------------------------------------------------

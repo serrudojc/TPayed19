@@ -56,26 +56,10 @@ struct Participantes{
 	ResPart info;	
 	bool empatado = false;
 	bool rondaEmpate = false;
-	bool sigTurno = false;
 	int i;
 	int j;
 	int k;
 };
-
-//------------------------------------------------
-//estructura para guardar en archivo
-/*
-struct Consolidado{
-	int idPart;
-	int puntaje;
-	char nombrePart[CHARCATEG];
-	ResPart info;
-	bool empatado = false;
-	bool sigTurno = false;
-};
-*/
-
-
 
 //------------------------------------------------
 //funciones para app de crear las preguntas
@@ -84,16 +68,16 @@ Categoria eliminarPrimerNodo (Nodo*& lista);
 
 //------------------------------------------------
 //funciones para el juego (algunas se usan en caso de debugger, no se usan ingame)
-Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, int &i, int &j, int &k);
+Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool &partidaCargada, int &I, int &J);
 void inicializarParticipantes(Participantes participante[]);
 Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[CHARCATEG]);
-void recuperarParticipantes(Participantes participante[], int &i, int &j, int &k);
+void recuperarParticipantes(Participantes participante[], int &I, int &J);
 int get_rand(int min, int max);
 int cantidadNodos (Nodo* lista);
 bool verificadorCategoriasDisponibles(Nodo *lista);
 Nodo* buscar(Nodo* lista, int v);
 Nodo* buscarCat(Nodo* lista, int v);
-void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j, int k);
+void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j);
 char *obtenerHora(char *fechaChar);
 void guardarSaveLista(Nodo *lista);
 void verEstado();
@@ -101,10 +85,5 @@ void leerSave();
 void mostrar (Participantes arr[],int len);
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
-int cantDeEmpatados(Participantes arr[], int len);
+int cantDeEmpatados(Participantes arr[]);
 void ordenarBurbuja (Participantes arr[], int len);
-
-
-
-
-

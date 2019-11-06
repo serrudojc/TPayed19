@@ -5,7 +5,7 @@
 #include <time.h>
 #include "funciones.hpp"
 using namespace std;
-
+//INTENTANDO CON UNA BANDERA DE CARGA DE PARTIDA
 //-------------------------------------------------------------------
 int main(){
 	//declaro cabeza de lista para preguntas a realizar
@@ -17,67 +17,61 @@ int main(){
 	//declaro array de participante tipo Participantes
 	Participantes participante[CANTPART];
 
-	int catRdm, i=0, j=0, k=0;
-	bool flag = true;
+	int catRdm, i, j, k, I, J;
+
+	//Este flagCatDisp me indica si tengo categorias disponibles
+	bool flagCatDisp = true;
+
+	//estos flags los uso en caso de cargar una partida.
+	bool partidaCargada = false, ialcanzado = true, jalcanzado = true, desempatar = false;
 
 	//voy a cargar una partida o iniciar una nueva. 
-	lista = nuevaPartidaCargarPartida(participante, lista, i, j, k); 
-
-	cout<<"valor de i="<<i<<endl;
-	cout<<"valor de j="<<j<<endl;
-	cout<<"valor de k="<<k<<endl;
+	//Si cargo una partida, partidaCargada=true y recupero iteradores i,j
+	lista = nuevaPartidaCargarPartida(participante, lista, partidaCargada, I, J); 
 
 	//inicializamos semilla para generador random
 	srand((int)time(NULL)); 
 	
-	//empezamos juego. Recorro todos los turnos, no tiene en cuenta caso de empate.
-	for(i; i<CANTTURNO; i++){
-		if(!flag)
+	//en caso de cargar una partida, verifico que no sea una partida empatada
+	for(int s=0; s<CANTPART; s++){
+		if(participante[s].rondaEmpate){
+			desempatar = true;
 			break;
-		cout<<"\t*** Ronda nº"<<i+1<<" ***"<<endl<<endl;
-		for(j; j<CANTPART; j++){
-			//recorro lista hasta encontrar la categoria del random
-			cout<<"["<<i+1<<"] - "<<participante[j].nombrePart<<" -: "<<endl;
+		}		
+	}
 
-			//verifico que haya categorias habilitadas
-			if(!verificadorCategoriasDisponibles(lista)){
-				flag = false;
-				break;
+	//empezamos juego. Recorro todos los turnos. Antes pregunto si viene de un empate previo.
+	if(!desempatar){		
+
+		//en caso de cargar partida, voy a cargar el iterador i para continuar
+		for(i=0; i<CANTTURNO; i++){
+			if(partidaCargada && ialcanzado){
+				while(i<I){
+					i++;
+				}
+				ialcanzado = false;
 			}
 
-			//elijo una categoria random
-			catRdm = get_rand(MIN, cantidadNodos(lista));
+			//En caso de no tener más categorias disponibles, salgo.
+			if(!flagCatDisp)
+				break;
+			
+			cout<<"\t*** Ronda nº"<<i+1<<" ***"<<endl<<endl;
 
-			//guardo el nodo encontrado para trabajar.
-			nodoCat = buscarCat(lista, catRdm);
+			for(j=0; j<CANTPART; j++){
+				//en caso de cargar partida, voy a cargar el iterador j para continuar
+				if(partidaCargada && jalcanzado){
+					while(j<J){
+						j++;
+					}
+					jalcanzado = false;
+				}
 
-			//itero hasta encontrar una pregunta
-			buscarPregunta(nodoCat, participante, i, j, k);
-
-			//tengo que guardar la lista de preguntas 
-			guardarSaveLista(lista);
-		}
-	}
-	//en caso de empate, debo seguir con los empatados
-	cout<<"\t*** Resultados Ronda ***"<<endl;
-	mostrar(participante,CANTPART);
-	cout<<endl;
-	int cantEmpat;
-	cantEmpat = cantDeEmpatados(participante, CANTPART);
-	
-	while(cantEmpat>1){
-		if(!flag)
-			break;
-		
-		//Proceso en caso de empate
-		for(k; k<CANTPART; k++){
-			//busco categoria random, para participantes con flag empatado
-			if(participante[k].empatado){
-				cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
+				cout<<"Ronda ["<<i+1<<"] # "<<participante[j].nombrePart<<" #: "<<endl;
 
 				//verifico que haya categorias habilitadas
 				if(!verificadorCategoriasDisponibles(lista)){
-					flag = false;
+					flagCatDisp = false;
 					break;
 				}
 
@@ -88,19 +82,62 @@ int main(){
 				nodoCat = buscarCat(lista, catRdm);
 
 				//itero hasta encontrar una pregunta
-				buscarPregunta(nodoCat, participante, i, j, k);	
+				buscarPregunta(nodoCat, participante, i, j);
 
 				//tengo que guardar la lista de preguntas 
 				guardarSaveLista(lista);
+			}
+		}
+	}
+	cout<<"\t*** Resultados Ronda ***"<<endl;
+	mostrar(participante,CANTPART);
+	cout<<endl;
+
+	//en caso de empate, debo seguir con los empatados
+	int cantEmpat;
+	cantEmpat = cantDeEmpatados(participante);
+	
+	while(cantEmpat>1){
+		//verifico que haya categorias disponibles.
+		if(!flagCatDisp)
+			break;
+
+		//Proceso en caso de empate
+		for(k=0; k<CANTPART; k++){
+			//busco categoria random, para participantes con flag empatado
+			//pregunto si el participante k está habilitado para la ronda de desempate
+			if(participante[k].rondaEmpate){
+				//pregunto si el participante k de la ronda de desempate, ya respondió (en caso de cargar save)
+				if(!participante[k].empatado){
+					cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
+
+					//verifico que haya categorias habilitadas
+					if(!verificadorCategoriasDisponibles(lista)){
+						flagCatDisp = false;
+						break;
+					}
+
+					//elijo una categoria random
+					catRdm = get_rand(MIN, cantidadNodos(lista));
+
+					//guardo el nodo encontrado para trabajar.
+					nodoCat = buscarCat(lista, catRdm);
+
+					//itero hasta encontrar una pregunta
+					buscarPregunta(nodoCat, participante, i, k);	
+
+					//tengo que guardar la lista de preguntas 
+					guardarSaveLista(lista);
+				}
 			}				
 		}
 		cout<<"\t*** Resultados Desempate***"<<endl;
 		mostrar(participante,CANTPART);
 		cout<<endl;
-		cantEmpat = cantDeEmpatados(participante, CANTPART);
+		cantEmpat = cantDeEmpatados(participante);
 	}
 
-	if(!flag)
+	if(!flagCatDisp)
 		cout<<"!!! No hay más categorías disponibles."<<endl<<endl;
 
 	//ordeno posiciones y muestro tabla de resultados

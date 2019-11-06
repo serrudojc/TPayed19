@@ -22,7 +22,7 @@ int main(){
 			case 0:	
 			{
 				if((arch = fopen("preguntas.dat","rb")) == NULL){
-					cout<<"Error, no se puede abrir preguntas.dat"<<endl;
+					cout<<"Error, no existe preguntas.dat"<<endl;
 					return 1;
 				}
 				break;
@@ -30,7 +30,7 @@ int main(){
 			case 1:
 			{
 				if((arch = fopen("preguntasSave.dat","rb")) == NULL){
-					cout<<"Error, no se puede abrir preguntasSave.dat"<<endl;
+					cout<<"Error, no existe preguntasSave.dat"<<endl;
 					return 2;
 				}
 				break;

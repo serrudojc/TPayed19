@@ -17,9 +17,8 @@ int main(){
 		cout<<"Respuesta: "<<reg.info.resp<<endl;
 		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
 		cout<<"*Puntaje: "<<reg.puntaje<<endl;
-		cout<<"valor de i="<<reg.i<<endl;
-		cout<<"valor de j="<<reg.j<<endl;
-		cout<<"valor de k="<<reg.k<<endl;
+		cout<<"i="<<reg.i<<", j="<<reg.j<<endl;
+		cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
 		cout<<endl;
 		fread(&reg, sizeof(Participantes),1,arch);
 	}
