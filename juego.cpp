@@ -76,7 +76,7 @@ int main(){
 				}
 
 				//elijo una categoria random
-				catRdm = get_rand(MIN, cantidadNodos(lista));
+				catRdm = get_rand(cantidadNodos(lista));
 
 				//guardo el nodo encontrado para trabajar.
 				nodoCat = buscarCat(lista, catRdm);
@@ -90,7 +90,7 @@ int main(){
 		}
 	}
 	cout<<"\t*** Resultados Ronda ***"<<endl;
-	mostrar(participante,CANTPART);
+	mostrar(participante);
 	cout<<endl;
 
 	//en caso de empate, debo seguir con los empatados
@@ -118,7 +118,7 @@ int main(){
 					}
 
 					//elijo una categoria random
-					catRdm = get_rand(MIN, cantidadNodos(lista));
+					catRdm = get_rand(cantidadNodos(lista));
 
 					//guardo el nodo encontrado para trabajar.
 					nodoCat = buscarCat(lista, catRdm);
@@ -132,7 +132,7 @@ int main(){
 			}				
 		}
 		cout<<"\n\t*** Resultados Desempate ***"<<endl;
-		mostrar(participante,CANTPART);
+		mostrar(participante);
 		cout<<endl;
 		cantEmpat = cantDeEmpatados(participante);
 	}
@@ -143,7 +143,7 @@ int main(){
 	//ordeno posiciones y muestro tabla de resultados
 	cout<<"\n\t*** Tabla de Resultados ***"<<endl;
 	ordenarBurbuja(participante, CANTPART);
-	mostrar(participante,CANTPART);
+	mostrar(participante);
 	cout<<endl;
 
 	return 0;

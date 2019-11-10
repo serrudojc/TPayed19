@@ -40,15 +40,17 @@ Categoria eliminarPrimerNodo (Nodo*& lista){
 Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool &partidaCargada, int &I, int &J){
 	int modalidad;
 	
+	mostrarIntro();
 	do{
 		cout<<"\t\t[0] Nueva partida."<<endl;
-		cout<<"\t\t[1] Cargar última partida."<<endl;
+		cout<<"\t\t[1] Cargar última partida.\n"<<endl;
 		cout<<"Elegir opción..: ";
 		cin>>modalidad;
 		cin.ignore(); 
 		switch(modalidad){
 			case 0:{ 
 				//nueva partida: abro y cierro save.dat, sobreescribiendo si ya existia
+				cout<<"\t- - - - - - Comenzando partida - - - - - -\n"<<endl;
 				FILE *fp = fopen("save.dat", "wb"); 
 				fclose(fp);
 
@@ -60,6 +62,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 
 				break;}
 			case 1:{ 
+				cout<<"\t- - - - - - Retormando partida - - - - - -\n"<<endl;
 				//continuar partida: Tengo que abrir preguntasSave.dat 
 				//La partida continua save.dat continua con append en funcion buscarPregunta, asi q no hago nada
 
@@ -76,6 +79,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 	return lista;
 }
 //--------------------------------------------------------------------------
+/*
 void inicializarParticipantes(Participantes participante[]){
 	for(int j=0; j<CANTPART; j++){
 		participante[j].idPart = j+1;
@@ -83,6 +87,26 @@ void inicializarParticipantes(Participantes participante[]){
 		cin.getline(participante[j].nombrePart, CHARCATEG);
 	}
 	cout<<endl;
+}
+*/
+void inicializarParticipantes(Participantes participante[]){
+	Participantes cons;
+	for(int i=0; i<CANTPART; i++){
+		participante[i].idPart = i+1;
+		cons.idPart = i+1;
+
+		cout<<"Nombre participante ["<<i+1<<"]: ";
+		
+		cin.getline(participante[i].nombrePart, CHARCATEG);
+		strcpy(cons.nombrePart, participante[i].nombrePart);
+
+		//coloco "ignorar" como respuesta, para no tener en cuenta este estos registros al mostrar o procesar
+		strcpy(cons.info.resp,"ignorar");
+		
+		FILE *fp = fopen("save.dat", "a");
+		fwrite(&cons, sizeof(Participantes) ,1, fp);
+		fclose(fp);
+	}
 }
 //--------------------------------------------------------------------------
 Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
@@ -122,7 +146,7 @@ void recuperarParticipantes(Participantes participante[], int &I, int &J){
 		}	
 		fread(&reg, sizeof(Participantes),1,fp);
 	}
-	//cout<<"devuelvo I="<<I<<" J="<<J<<" en recuperarParticipantes()"<<endl;
+	cout<<"devuelvo I="<<I<<" J="<<J<<" en recuperarParticipantes()"<<endl;
 	//cout<<"participante["<<t-1<<"].rondaEmpate: "<<participante[t-1].rondaEmpate<<endl;
 	cout<<endl;
 	fclose(fp);
@@ -146,7 +170,7 @@ bool verificarEmpatados(Participantes participante[]){
 
 //--------------------------------------------------------------------------
 //devuelve un entero entre min y max
-int get_rand(int min, int max){
+int get_rand(int max){
 	return rand()%(max);
 }
 //-------------------------------------------------------------------------
@@ -193,7 +217,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 		//pregunto si la categoria está habilitada.
 		if(nodoCat->info.catEnabled){
 			//elijo una pregunta random	
-			int pregRdm = get_rand(MIN, CANTPREG);
+			int pregRdm = get_rand(CANTPREG);
 
 			//si la pregunta está habilitada, proceso y salgo del while. Sino, sigo en el while
 			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
@@ -203,7 +227,8 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 									
 				//guardo respuesta en auxReg (tipo ResPart)
 				cin.getline(auxReg.resp, CHARRESP);								
-				
+				estandarizarTexto(auxReg.resp);
+
 				//desactivo la pregunta
 				nodoCat->info.preguntas[pregRdm].pregEnabled = false;
 				
@@ -252,7 +277,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 				//reinicio estado de pregunta
 				strcpy(auxReg.esCorrecta , "Incorrecta");
 
-				verEstado();
+				verEstado(participante);
 
 				break;
 			}else{
@@ -306,42 +331,67 @@ void guardarSaveLista (Nodo* lista){
 	fclose(pointer);		
 }
 //-----------------------------------------------------------------------------
-void verEstado(){
+void verEstado(Participantes participante[]){
 	string est;
 	cout<<"Ver histórico hasta el momento? [y][n]:";
 	cin>>est;
 	cin.ignore();
 	if (est == "y" || est == "Y")
-		leerSave();
+		leerSave(participante);
 	cout<<endl;
 }
 //-----------------------------------------------------------------------------
-void leerSave(){
+void leerSave(Participantes participante[]){
 	FILE * arch = fopen("save.dat","rb");
 	Participantes reg;
+	int part;
 	fread(&reg, sizeof(Participantes),1,arch);
-	cout<<"\n\t#############   HISTORIAL   ##################"<<endl;
-	while(!feof(arch)){
-		cout<<"Id participante:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
-		cout<<"Pregunta: "<<reg.info.pregunta<<endl;
-		cout<<"Respuesta: "<<reg.info.resp<<endl;
-		cout<<"Es correcta?: "<<"\t\t"<<reg.info.esCorrecta<<endl;
-		cout<<"# Puntaje: "<<reg.puntaje<<endl;
-		cout<<"i="<<reg.i<<", j="<<reg.j<<endl;
-		cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
-		cout<<endl;
-		fread(&reg, sizeof(Participantes),1,arch);
+	cout<<"\n\t#############   HISTORIAL   ##################\n"<<endl;
+	for(int i=0; i<CANTPART; i++){
+		cout<<"\t["<<participante[i].idPart<<"] "<<participante[i].nombrePart<<endl;
+	}
+	cout<<"\n\tElegir participante: (0 para todos): ";
+	cin>>part; cout<<"\n";
+	cin.ignore();
+	cout<<"\n\t..............................................\n";
+	
+	if(part == 0){
+		while(!feof(arch)){
+			//si no tiene como respuesta "ignorar, muestro"
+			if(strcmp(reg.info.resp,"ignorar")){
+				mostrarSave(reg);
+			}
+			fread(&reg, sizeof(Participantes),1,arch);	
+		}
+	}else{
+		while(!feof(arch) && reg.info.resp != "ignorar"){
+			//Muestro el participante elegido y si no tiene como respuesta "ignorar"
+			if(reg.idPart == part && strcmp(reg.info.resp,"ignorar")){
+				mostrarSave(reg);
+			}		
+			fread(&reg, sizeof(Participantes),1,arch);
+		}	
 	}
 	fclose(arch);
 	cout<<"\t##############################################"<<endl;
 }
 //--------------------------------------------------------------------------
+void mostrarSave(Participantes reg){
 
-void mostrar (Participantes arr[],int len){
+	cout<<"id:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
+	cout<<" Pregunta: "<<reg.info.pregunta<<endl;
+	cout<<"Respuesta: "<<reg.info.resp<<endl;
+	cout<<"Es correcta?: "<<reg.info.esCorrecta<<"\t# Puntaje: "<<reg.puntaje<<endl;
+	cout<<"i="<<reg.i<<", j="<<reg.j<<" ";
+	cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
+	cout<<endl;
+}
+//--------------------------------------------------------------------------
+void mostrar (Participantes arr[]){
 	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
 	cout<<setw(5)<<"id"<<setw(8)<<"Puntaje"<<setw(25)<<"Participante"<<endl;
 	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
-	for(int i=0; i<len; i++){
+	for(int i=0; i<CANTPART; i++){
 		cout<<setw(5)<<arr[i].idPart<<setw(5)<<arr[i].puntaje<<setw(28)<<arr[i].nombrePart<<endl;
 	}
 }
@@ -401,7 +451,7 @@ int cantDeEmpatados(Participantes arr[]){
 		}else{
 			arr[i].rondaEmpate = false;
 		}
-		strcpy(arr[i].info.resp,"*** Guardado flags de empatados ***");
+		strcpy(arr[i].info.resp,"ignorar");
 		arr[i].empatado = false;	
 	}
 
@@ -429,3 +479,35 @@ void ordenarBurbuja (Participantes arr[], int len){
 	}
 }
 //--------------------------------------------------------------------------
+//Convierto de mayús a minúsc. No puedo sacar acentos.
+void estandarizarTexto(char texto[]){
+	int i=0;
+	char acentos[] = "áéíóú";
+	//cout<<acentos<<endl;
+	char valor[]= "aeiou";
+	//cout<<texto<<endl;
+	while(texto[i] != '\0'){
+		if(texto[i]>='A' && texto[i]<='Z'){
+			texto[i]+=32;
+		}/*
+		for(int j=0; j<5; j++){
+			//cout<<texto[i]<<" == "<<acentos[j]<<endl;
+			if(texto[i] == (unsigned char)acentos[j])
+				texto[i] = valor[j];
+		}*/
+		i++;
+	}
+}
+//---------------------------------------------------------------------------
+void mostrarIntro (){
+	cout<<"\n\t******************************************"<<endl;
+	cout<<"\t*                UTN FRBA                *"<<endl;
+	cout<<"\t*    Algoritmos y Estructura de Datos    *"<<endl;
+	cout<<"\t*                                        *"<<endl;
+	cout<<"\t******************************************"<<endl;
+	cout<<"\t*         Trabajo Práctico 2019          *"<<endl;
+	cout<<"\t*                                        *"<<endl;
+	cout<<"\t*      Quién quiere ser billonario?      *"<<endl;
+	cout<<"\t******************************************\n"<<endl;
+
+}

@@ -36,18 +36,12 @@ struct Nodo{
 	|_______|
    participante[5]
 */
-
 struct ResPart{
 	char pregunta[CHARPREG];
 	char resp[CHARRESP];
 	char esCorrecta[CHARCATEG] = "Incorrecta";
-	char tiempo[CHARCATEG]; //no se como hacer esto aun
+	char tiempo[CHARCATEG]; 
 };
-/*
-struct NodoPart{
-	ResPart info;
-	NodoPart *sig;
-};*/
 
 struct Participantes{
 	int idPart;
@@ -72,7 +66,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 void inicializarParticipantes(Participantes participante[]);
 Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[CHARCATEG]);
 void recuperarParticipantes(Participantes participante[], int &I, int &J);
-int get_rand(int min, int max);
+int get_rand(int max);
 int cantidadNodos (Nodo* lista);
 bool verificadorCategoriasDisponibles(Nodo *lista);
 Nodo* buscar(Nodo* lista, int v);
@@ -80,10 +74,13 @@ Nodo* buscarCat(Nodo* lista, int v);
 void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j);
 char *obtenerHora(char *fechaChar);
 void guardarSaveLista(Nodo *lista);
-void verEstado();
-void leerSave();
-void mostrar (Participantes arr[],int len);
+void verEstado(Participantes participante[]);
+void leerSave(Participantes participante[]);
+void mostrarSave(Participantes reg);
+void mostrar (Participantes arr[]);
 void mostrar (Nodo* lista);
 void mostrarUnNodo(Nodo* lista);
 int cantDeEmpatados(Participantes arr[]);
 void ordenarBurbuja (Participantes arr[], int len);
+void estandarizarTexto(char texto[]);
+void mostrarIntro ();
