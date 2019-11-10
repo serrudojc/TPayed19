@@ -39,15 +39,25 @@ Restricciones:
 
 
 # USO DEL PROGRAMA
+
+### Consideraciones
+El trabajo fue realizado y compilado en Ubuntu usando GNU C Compiler (gcc)
+
+
 ### Archivos make
 El projecto tiene archivos make usados para facilitar la compilacion en la terminal de Ubuntu. No se usan en caso de compilarse en un IDE.
 Ejemplo de uso
 
-`make -f MakeGenPreg`.
+`make -f MakeGenPreg`           me genera un ./genPreg
 
-Me genera el ejecutable genPreg
+`make -f MakeLeerPreguntasDat`  me genera un ./leerPreguntasDat
 
-Para limpiar (borrar) se puede ejecutar
+`make -f MakeJuego`             me genera un ./juego
+
+`make -f MakeLeerSave`          me genera un ./leerSave
+
+
+Para limpiar (borrar) los ejecutables y .object, al mismo comando se agrega al final "clean":
 
 `make -f MakeGenPreg clean`
 
@@ -55,17 +65,24 @@ Para limpiar (borrar) se puede ejecutar
 ### Carga de preguntas y respuestas iniciales.
 Ejecutando desde la terminal `./genPreg` se accede al programa para la inicialización de preguntas.
 
-Ejecutando `./genPreg<textoPrueba` se carga directamente el txt sin necesidad de estar tipeando en la consola (armar un txt aparte con las categorias, preguntas y respuestas). 
+Ejecutando `./genPreg<textoPreguntas` se carga directamente el txt sin necesidad de estar tipeando en la consola (armar un txt aparte con las categorias, preguntas y respuestas). 
 
-Se genera un archivo **preguntas.dat**
+Se generará un archivo **preguntas.dat**, el cual se usará para cargar en memoria las preguntas en el juego.
 
 ### Lectura de los archivos preguntas.dat y preguntasSave.dat
 Si es necesario leer el contenido de las preguntas, se realizó un programa para tal acción, que se compila con `make -f MakeLeerPreguntasDat`
 
-Se puede leer tanto el **preguntas.dat** con las preguntas en crudo como el **preguntasSave.dat**, que básicamente es el mismo archivo, pero con las preguntas que ya fueron realizadas en la partida, deshabilitadas, de manera que si se retorma la partida, no se vuelvan a realizar las mismas preguntas.
+Se puede leer tanto el **preguntas.dat** con las preguntas en crudo como el **preguntasSave.dat**, que básicamente es el mismo archivo, pero con las preguntas que ya fueron realizadas en la partida, deshabilitadas, de manera que si se retorma la partida, no se las vuela a elegir.
 
 # El JUEGO 
-Para ejecutar el juego, se compila desde la termina `make -f Makejuego` y se ejecuta `./juego`.
+Para ejecutar el juego, se compila desde la termina `make -f MakeJuego` y se ejecuta `./juego`.
 El juego consta de 5 turnos con 5 jugadores. 
-En caso de no haber un ganador en estos ciclos, se procederá a un desempate con los jugadores empatados
-Para saber quienes son los empatados, cada jugador tiene una bandera de **empatado** la cual está por defecto en **false**. Una vez terminada la ronda básica, una función **cantDeEmpatados** guarda el mayor puntaje, para luego comparar los jugadores que tengan ese mismo puntaje y asignar **true** a la bandera.
+En caso de no haber un ganador en estos ciclos, se procederá a un desempate con los jugadores empatados.
+
+Para saber quienes son los empatados, cada jugador tienen dos banderas:
+
+**rondaEmpate** Indica que los jugadores tienen que desempatar. 
+
+**empatado** Indica que el jugador ya respondió (bien o mal) en la ronda de desempate, y en caso de retormar uan partida, no se tendrá en cuenta.
+
+Una vez terminada la ronda básica, una función **cantDeEmpatados** guarda el mayor puntaje, para luego comparar los jugadores que tengan ese mismo puntaje y asignar **true** a la bandera **rondaEmpate**
