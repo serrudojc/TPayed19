@@ -23,7 +23,7 @@ int main(){
 	bool flagCatDisp = true;
 
 	//estos flags los uso en caso de cargar una partida.
-	bool partidaCargada = false, ialcanzado = true, jalcanzado = true, desempatar = false;
+	bool partidaCargada = false, ialcanzado = false, jalcanzado = false, desempatar = false;
 
 	//voy a cargar una partida o iniciar una nueva. 
 	//Si cargo una partida, partidaCargada=true y recupero iteradores i,j
@@ -43,13 +43,14 @@ int main(){
 	//empezamos juego. Recorro todos los turnos. Antes pregunto si viene de un empate previo.
 	if(!desempatar){		
 
-		//en caso de cargar partida, voy a cargar el iterador i para continuar
+		//en caso de cargar partida, voy a cargar el iterador i para continuar con el I turno del save
 		for(i=0; i<CANTTURNO; i++){
-			if(partidaCargada && ialcanzado){
+			//si la partida está cargada y 
+			if(partidaCargada && !ialcanzado){
 				while(i<I){
 					i++;
 				}
-				ialcanzado = false;
+				ialcanzado = true;
 			}
 
 			//En caso de no tener más categorias disponibles, salgo.
@@ -60,14 +61,12 @@ int main(){
 
 			for(j=0; j<CANTPART; j++){
 				//en caso de cargar partida, voy a cargar el iterador j para continuar
-				if(partidaCargada && jalcanzado){
+				if(partidaCargada && !jalcanzado){
 					while(j<J){
 						j++;
 					}
-					jalcanzado = false;
+					jalcanzado = true;
 				}
-
-				cout<<"Ronda ["<<i+1<<"] # "<<participante[j].nombrePart<<" #: "<<endl;
 
 				//verifico que haya categorias habilitadas
 				if(!verificadorCategoriasDisponibles(lista)){
@@ -94,9 +93,11 @@ int main(){
 	cout<<endl;
 
 	//en caso de empate, debo seguir con los empatados
+	//Antes pregunto si viene de un empate previo.
 	int cantEmpat;
-	cantEmpat = cantDeEmpatados(participante);
-	
+	if(!desempatar){
+		cantEmpat = cantDeEmpatados(participante);
+	}
 	while(cantEmpat>1){
 		//verifico que haya categorias disponibles.
 		if(!flagCatDisp)
@@ -109,7 +110,6 @@ int main(){
 			if(participante[k].rondaEmpate){
 				//pregunto si el participante k de la ronda de desempate, ya respondió (en caso de cargar save)
 				if(!participante[k].empatado){
-					cout<<"[desempate]["<<participante[k].nombrePart<<"]: ";
 
 					//verifico que haya categorias habilitadas
 					if(!verificadorCategoriasDisponibles(lista)){
@@ -145,6 +145,12 @@ int main(){
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante);
 	cout<<endl;
+
+	char leer;
+	cout<<"\tLeer Respuestas de Preguntas.dat o PreguntasSave.dat? [s][n]: ";
+	cin>>leer;
+	if (leer == 's')
+		leerRespuestas();
 
 	return 0;
 }

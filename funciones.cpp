@@ -44,13 +44,13 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 	do{
 		cout<<"\t\t[0] Nueva partida."<<endl;
 		cout<<"\t\t[1] Cargar última partida.\n"<<endl;
-		cout<<"Elegir opción..: ";
+		cout<<"\t\tElegir opción: ";
 		cin>>modalidad;
 		cin.ignore(); 
 		switch(modalidad){
 			case 0:{ 
 				//nueva partida: abro y cierro save.dat, sobreescribiendo si ya existia
-				cout<<"\t- - - - - - Comenzando partida - - - - - -\n"<<endl;
+				cout<<"\n\t- - - - - - Comenzando partida - - - - - -\n"<<endl;
 				FILE *fp = fopen("save.dat", "wb"); 
 				fclose(fp);
 
@@ -62,7 +62,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 
 				break;}
 			case 1:{ 
-				cout<<"\t- - - - - - Retormando partida - - - - - -\n"<<endl;
+				cout<<"\n\t- - - - - - Retormando partida - - - - - -\n"<<endl;
 				//continuar partida: Tengo que abrir preguntasSave.dat 
 				//La partida continua save.dat continua con append en funcion buscarPregunta, asi q no hago nada
 
@@ -72,23 +72,13 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 				recuperarParticipantes(participante, I, J);
 				partidaCargada = true;
 				break;}
-			default: cout<<"Opción incorrecta."<<endl; break;
+			default: cout<<"\n\tOpción incorrecta !!!\n"<<endl; break;
 		}
 
 	}while(modalidad != 0 && modalidad != 1);
 	return lista;
 }
 //--------------------------------------------------------------------------
-/*
-void inicializarParticipantes(Participantes participante[]){
-	for(int j=0; j<CANTPART; j++){
-		participante[j].idPart = j+1;
-		cout<<"Nombre participante ["<<j+1<<"]: ";
-		cin.getline(participante[j].nombrePart, CHARCATEG);
-	}
-	cout<<endl;
-}
-*/
 void inicializarParticipantes(Participantes participante[]){
 	Participantes cons;
 	for(int i=0; i<CANTPART; i++){
@@ -124,6 +114,7 @@ Nodo *leerPreguntasDat(Nodo *&lista, const char archivo[]){
 	return lista;
 }
 //--------------------------------------------------------------------------
+//En caso de cargar save, tengo que recuperar los iteradores i,j para continuar con el for de los turnos
 void recuperarParticipantes(Participantes participante[], int &I, int &J){
 	int t=0;
 	FILE *fp = fopen("save.dat", "rb");
@@ -151,7 +142,7 @@ void recuperarParticipantes(Participantes participante[], int &I, int &J){
 	cout<<endl;
 	fclose(fp);
 }
-
+//no estoy usando esto
 bool verificarEmpatados(Participantes participante[]){
 	int t=0;
 	bool hayEmpatados = false;
@@ -221,6 +212,13 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 
 			//si la pregunta está habilitada, proceso y salgo del while. Sino, sigo en el while
 			if(nodoCat->info.preguntas[pregRdm].pregEnabled){
+				
+				if(participante[j].rondaEmpate == true){
+					cout<<"[desempate]["<<participante[j].nombrePart<<"]: ";
+				}else{
+					cout<<"Ronda ["<<i+1<<"] # "<<participante[j].nombrePart<<" #"<<endl;
+				}
+
 				//realizo la pregunta
 				cout<<nodoCat->info.preguntas[pregRdm].pregunta<<": "<<endl;
 				cout<<":> ";
@@ -241,10 +239,11 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 				if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRdm].respuesta) == 0){	
 					participante[j].puntaje++;
 					strcpy(auxReg.esCorrecta , "Correcta");
-					//en caso de empate, marco flag empatado con true, para saber q este jugador ya respondió
-					if(participante[j].rondaEmpate)
-						participante[j].empatado = true;
 				}
+				//en caso de empate, marco flag empatado con true, para saber q este jugador ya respondió
+				if(participante[j].rondaEmpate)
+					participante[j].empatado = true;
+
 				//guardo hora
 				strcpy(auxReg.tiempo, obtenerHora(auxReg.tiempo));
 
@@ -351,7 +350,7 @@ void leerSave(Participantes participante[]){
 		cout<<"\t["<<participante[i].idPart<<"] "<<participante[i].nombrePart<<endl;
 	}
 	cout<<"\n\tElegir participante: (0 para todos): ";
-	cin>>part; cout<<"\n";
+	cin>>part; 
 	cin.ignore();
 	cout<<"\n\t..............................................\n";
 	
@@ -378,10 +377,10 @@ void leerSave(Participantes participante[]){
 //--------------------------------------------------------------------------
 void mostrarSave(Participantes reg){
 
-	cout<<"id:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
-	cout<<" Pregunta: "<<reg.info.pregunta<<endl;
-	cout<<"Respuesta: "<<reg.info.resp<<endl;
-	cout<<"Es correcta?: "<<reg.info.esCorrecta<<"\t# Puntaje: "<<reg.puntaje<<endl;
+	cout<<"* id:"<<reg.idPart<<" || "<<reg.nombrePart<<" || "<<reg.info.tiempo;
+	cout<<"#Pregunta: "<<reg.info.pregunta<<endl;
+	cout<<"#Respuesta: "<<reg.info.resp<<endl;
+	cout<<"* Es correcta?: \t"<<reg.info.esCorrecta<<"\t# Puntaje: "<<reg.puntaje<<endl;
 	cout<<"i="<<reg.i<<", j="<<reg.j<<" ";
 	cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
 	cout<<endl;
@@ -411,27 +410,11 @@ void mostrar (Nodo* lista){
 		aux = aux->sig;
 	}		
 }
-//--------------------------------------------------------------------------
-void mostrarUnNodo(Nodo* lista){ 
-	Nodo *aux = lista;
-	while(aux != NULL){
-		cout<<aux->info.id<<endl;
-		cout<<aux->info.categoria<<endl;
-		cout<<aux->info.catEnabled<<endl;
-		for(int i=0; i<CANTPREG; i++){
-			cout<<"Pregunta   ["<<i<<"]: "<<aux->info.preguntas[i].pregunta<<endl;
-			cout<<"Respuesta  ["<<i<<"]: "<<aux->info.preguntas[i].respuesta<<endl;
-			cout<<"Habilitada ["<<i<<"]: "<<aux->info.preguntas[i].pregEnabled<<endl;
-		}
-		cout<<endl;		
-		aux = NULL;		
-	}
-}
 //----------------------------------------------------------------------------
 /* Los empatados tienen dos flags: 
 participante[].rondaEmpate que significa que está en una ronda de desempate y hasta que 
 todos hayan respondido, seguiran en la ronda.
-participante[].empatado significa que dentro de la ronda, respondió bien y sigue.
+participante[].empatado significa que dentro de la ronda, ya respondió (en caso de retomar partida).
 */
 
 int cantDeEmpatados(Participantes arr[]){
@@ -443,7 +426,7 @@ int cantDeEmpatados(Participantes arr[]){
 			mayorPuntaje = arr[i].puntaje;
 		}
 	}
-	//Activo flag de empatados a los que tienen el mayor puntaje
+	//Activo flag de rondaEmpate a los que tienen el mayor puntaje
 	for(int i=0; i<CANTPART; i++){
 		if(arr[i].puntaje == mayorPuntaje){
 			arr[i].rondaEmpate = true;
@@ -509,5 +492,54 @@ void mostrarIntro (){
 	cout<<"\t*                                        *"<<endl;
 	cout<<"\t*      Quién quiere ser billonario?      *"<<endl;
 	cout<<"\t******************************************\n"<<endl;
+}
+//---------------------------------------------------------------------------
+int leerRespuestas(){
+	int opcion;
+	FILE *arch;
 
+	cout<<"[0] Leer preguntas.dat"<<endl;
+	cout<<"[1] Leer preguntasSave.dat"<<endl;
+	cin>>opcion;
+	cin.ignore();
+
+	do{
+		switch(opcion){
+			case 0:	
+			{
+				if((arch = fopen("preguntas.dat","rb")) == NULL){
+					cout<<"Error, no existe preguntas.dat"<<endl;
+					return 1;
+				}
+				break;
+			}
+			case 1:
+			{
+				if((arch = fopen("preguntasSave.dat","rb")) == NULL){
+					cout<<"Error, no existe preguntasSave.dat"<<endl;
+					return 2;
+				}
+				break;
+			}
+			default: cout<<"opcion incorrecta"<<endl;
+		}						
+	} while (opcion != 0 && opcion != 1);
+	
+	Categoria reg;
+	fread(&reg, sizeof(Categoria),1,arch);
+
+	while(!feof(arch)){
+		cout<<"id: "<<"\t\t"<<reg.id<<endl;
+		cout<<"Categoria: "<<"\t"<<reg.categoria<<endl;
+		cout<<"Habilitada: "<<"\t"<<reg.catEnabled<<endl;
+		for(int i=0; i<CANTPREG; i++){
+			cout<<"Pregunta   ["<<i<<"]: "<<reg.preguntas[i].pregunta<<endl;
+			cout<<"Respuesta  ["<<i<<"]: "<<reg.preguntas[i].respuesta<<endl;
+			cout<<"Habilitada ["<<i<<"]: "<<reg.preguntas[i].pregEnabled<<endl;
+		}
+		cout<<endl;
+		fread(&reg, sizeof(Categoria),1,arch);
+	}
+	fclose(arch);
+	return 0;
 }
