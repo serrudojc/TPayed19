@@ -54,6 +54,6 @@ int main(){
 		cout<<endl;
 		fread(&reg, sizeof(Categoria),1,arch);
 	}
-	fclose(arch);z
+	fclose(arch);
 	return 0;
 }
