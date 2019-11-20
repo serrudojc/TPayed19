@@ -62,6 +62,13 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 
 				break;}
 			case 1:{ 
+				//verifico que exista un save anterior
+				FILE *arch;
+				if((arch = fopen("save.dat","rb"))==NULL){
+					cout<<"Error, no exite partida guardada. Empezar nueva."<<endl;
+					modalidad = 3;
+					break;
+				}
 				cout<<"\n\t- - - - - - Retormando partida - - - - - -\n"<<endl;
 				//continuar partida: Tengo que abrir preguntasSave.dat 
 				//La partida continua save.dat continua con append en funcion buscarPregunta, asi q no hago nada
@@ -235,10 +242,17 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 				
 				//guardo pregunta en auxReg
 				strcpy(auxReg.pregunta, nodoCat->info.preguntas[pregRdm].pregunta);	
+				
+				//uso var auxiliar para no estandarizar la respuesta (al mostrar respuesta, por ej, que los paises empiezen con mayúscula)
+				char solucion[CHARRESP]; 
+				strcpy(solucion,nodoCat->info.preguntas[pregRdm].respuesta);
 				//comparo respuestas
-				if( strcmp(auxReg.resp, nodoCat->info.preguntas[pregRdm].respuesta) == 0){	
+				if( strcmp(auxReg.resp, estandarizarTexto(solucion)) == 0){	
 					participante[j].puntaje++;
 					strcpy(auxReg.esCorrecta , "Correcta");
+					cout<<" :D Respuesta Correcta!"<<endl;
+				}else{
+					cout<<" :( :( :( incorrecto, la respuesta era: "<<nodoCat->info.preguntas[pregRdm].respuesta<<endl;
 				}
 				//en caso de empate, marco flag empatado con true, para saber q este jugador ya respondió
 				if(participante[j].rondaEmpate)
@@ -277,6 +291,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 				strcpy(auxReg.esCorrecta , "Incorrecta");
 
 				verEstado(participante);
+				verPuntuacion(participante);
 
 				break;
 			}else{
@@ -386,6 +401,16 @@ void mostrarSave(Participantes reg){
 	cout<<endl;
 }
 //--------------------------------------------------------------------------
+void verPuntuacion(Participantes participante[]){
+	string est;
+	cout<<"Ver puntuación? [y][n]:";
+	cin>>est;
+	cin.ignore();
+	if (est == "y" || est == "Y")
+		mostrar(participante);
+	cout<<endl;
+}
+//---------------------------------------------------------------------------
 void mostrar (Participantes arr[]){
 	cout<<setw(38)<<setfill('-')<<'\n'<<setfill(' ');
 	cout<<setw(5)<<"id"<<setw(8)<<"Puntaje"<<setw(25)<<"Participante"<<endl;
@@ -463,7 +488,7 @@ void ordenarBurbuja (Participantes arr[], int len){
 }
 //--------------------------------------------------------------------------
 //Convierto de mayús a minúsc. No puedo sacar acentos.
-void estandarizarTexto(char texto[]){
+char *estandarizarTexto(char texto[]){
 	int i=0;
 	char acentos[] = "áéíóú";
 	//cout<<acentos<<endl;
@@ -480,6 +505,7 @@ void estandarizarTexto(char texto[]){
 		}*/
 		i++;
 	}
+	return texto;
 }
 //---------------------------------------------------------------------------
 void mostrarIntro (){
