@@ -63,24 +63,32 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 				break;}
 			case 1:{ 
 				//verifico que exista un save anterior
-				FILE *arch; 
+				FILE *arch;
 				Participantes reg;
+				bool terminada = false;
+
+				//pregunto si existe una partida anterior
 				if((arch = fopen("save.dat","rb"))==NULL){
 					cout<<"\nError, no exite partida guardada. Empezar nueva.\n"<<endl;
 					modalidad = 3;
 					break;
 				}else{
-					fread(&reg, sizeof(Participantes), 1, arch);
+					//si existe, pregunto si tiene un flag de partidaTerminada
+					fread(&reg, sizeof(Participantes),1,arch);
 					while(!feof(arch)){
 						if(reg.partidaTerminada){
-							cout<<"\nError, la partida está terminada. Empezar nueva.\n"<<endl;
-							modalidad = 3;
+							cout<<"Partida terminada. Comenzar nueva"<<endl;
 							fclose(arch);
+							terminada = true;
+							modalidad = 3;
 							break;
 						}
-						fread(&reg, sizeof(Participantes), 1, arch);
+						fread(&reg, sizeof(Participantes),1,arch);
 					}
 					fclose(arch);
+				}
+				if(terminada){
+					break;
 				}
 				cout<<"\n\t- - - - - - Retormando partida - - - - - -\n"<<endl;
 				//continuar partida: Tengo que abrir preguntasSave.dat 
@@ -511,12 +519,6 @@ void mostrarGanador(Participantes arr[]){
 			break;
 		}
 	}
-	//marco que se terminó la partida
-	cons.partidaTerminada = true;
-	FILE *fp = fopen("save.dat", "a");
-	fwrite(&cons, sizeof(Participantes) ,1, fp);
-	fclose(fp);
-
 	if(ganador){
 		cout<<"\n\n\n\t\t $$$ PRIMER PUESTO $$$\n";
 		cout<<"\n\t\tFelicitaciones "<<arr[0].nombrePart<<" !!!"<<endl;
@@ -525,6 +527,14 @@ void mostrarGanador(Participantes arr[]){
 		cout<<"\t$               FELICITACIONES!              $"<<endl;
 		cout<<"\t\t"<<arr[0].nombrePart<<endl;
 		cout<<"\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"<<endl;
+
+		//voy a activar un flag de partida terminada
+		FILE *fp = fopen("save.dat", "a");
+		arr[0].partidaTerminada = true;
+		cons = arr[0];
+		fwrite(&cons, sizeof(Participantes) ,1, fp);
+		fclose(fp);	
+
 	}else{
 		cout<<"\n\n\t No hubo ganador. Todos empatados o se acabaron las preguntas :("<<endl;
 	}
