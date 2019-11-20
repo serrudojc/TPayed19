@@ -82,6 +82,7 @@ void mostrar (Participantes arr[]);
 void mostrar (Nodo* lista);
 int cantDeEmpatados(Participantes arr[]);
 void ordenarBurbuja (Participantes arr[], int len);
+void mostrarGanador(Participantes arr[]);
 char *estandarizarTexto(char texto[]);
 void mostrarIntro ();
 int leerRespuestas();

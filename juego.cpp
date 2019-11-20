@@ -144,6 +144,7 @@ int main(){
 	cout<<"\n\t*** Tabla de Resultados ***"<<endl;
 	ordenarBurbuja(participante, CANTPART);
 	mostrar(participante);
+	mostrarGanador(participante);
 	cout<<endl;
 
 	char leer;

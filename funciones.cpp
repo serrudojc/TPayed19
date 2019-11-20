@@ -65,7 +65,7 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 				//verifico que exista un save anterior
 				FILE *arch;
 				if((arch = fopen("save.dat","rb"))==NULL){
-					cout<<"Error, no exite partida guardada. Empezar nueva."<<endl;
+					cout<<"\nError, no exite partida guardada. Empezar nueva.\n"<<endl;
 					modalidad = 3;
 					break;
 				}
@@ -144,7 +144,7 @@ void recuperarParticipantes(Participantes participante[], int &I, int &J){
 		}	
 		fread(&reg, sizeof(Participantes),1,fp);
 	}
-	cout<<"devuelvo I="<<I<<" J="<<J<<" en recuperarParticipantes()"<<endl;
+	//cout<<"devuelvo I="<<I<<" J="<<J<<" en recuperarParticipantes()"<<endl;
 	//cout<<"participante["<<t-1<<"].rondaEmpate: "<<participante[t-1].rondaEmpate<<endl;
 	cout<<endl;
 	fclose(fp);
@@ -252,7 +252,7 @@ void buscarPregunta(Nodo *&nodoCat, Participantes participante[], int i, int &j)
 					strcpy(auxReg.esCorrecta , "Correcta");
 					cout<<" :D Respuesta Correcta!"<<endl;
 				}else{
-					cout<<" :( :( :( incorrecto, la respuesta era: "<<nodoCat->info.preguntas[pregRdm].respuesta<<endl;
+					cout<<"\t:( incorrecto, la respuesta era: "<<nodoCat->info.preguntas[pregRdm].respuesta<<endl;
 				}
 				//en caso de empate, marco flag empatado con true, para saber q este jugador ya respondió
 				if(participante[j].rondaEmpate)
@@ -347,12 +347,13 @@ void guardarSaveLista (Nodo* lista){
 //-----------------------------------------------------------------------------
 void verEstado(Participantes participante[]){
 	string est;
-	cout<<"Ver histórico hasta el momento? [y][n]:";
+	cout<<"# Ver histórico hasta el momento?\t[y][n]:";
 	cin>>est;
 	cin.ignore();
-	if (est == "y" || est == "Y")
+	if (est == "y" || est == "Y"){
 		leerSave(participante);
-	cout<<endl;
+		cout<<endl;
+	}
 }
 //-----------------------------------------------------------------------------
 void leerSave(Participantes participante[]){
@@ -403,7 +404,7 @@ void mostrarSave(Participantes reg){
 //--------------------------------------------------------------------------
 void verPuntuacion(Participantes participante[]){
 	string est;
-	cout<<"Ver puntuación? [y][n]:";
+	cout<<"# Ver puntuación?\t\t\t[y][n]:";
 	cin>>est;
 	cin.ignore();
 	if (est == "y" || est == "Y")
@@ -484,6 +485,29 @@ void ordenarBurbuja (Participantes arr[], int len){
 				arr[j+1] = aux;
 			}
 		}
+	}
+}
+//--------------------------------------------------------------------------
+void mostrarGanador(Participantes arr[]){
+	bool ganador = true;
+	Participantes cons;
+
+	for(int i=1; i<CANTPART; i++){
+		if(arr[i].puntaje >= arr[0].puntaje){
+			ganador = false;
+			break;
+		}
+	}
+	if(ganador){
+		cout<<"\n\n\n\t\t $$$ PRIMER PUESTO $$$\n";
+		cout<<"\n\t\tFelicitaciones "<<arr[0].nombrePart<<" !!!"<<endl;
+		cout<<"\n\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"<<endl;
+		cout<<"\t$                PRIMER PUESTO               $"<<endl;
+		cout<<"\t$               FELICITACIONES!              $"<<endl;
+		cout<<"\t\t"<<arr[0].nombrePart<<endl;
+		cout<<"\t$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n"<<endl;
+	}else{
+		cout<<"\n\n\t No hubo ganador. Todos empatados o se acabaron las preguntas :("<<endl;
 	}
 }
 //--------------------------------------------------------------------------
