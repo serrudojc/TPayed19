@@ -63,11 +63,24 @@ Nodo *nuevaPartidaCargarPartida(Participantes participante[], Nodo *lista, bool 
 				break;}
 			case 1:{ 
 				//verifico que exista un save anterior
-				FILE *arch;
+				FILE *arch; 
+				Participantes reg;
 				if((arch = fopen("save.dat","rb"))==NULL){
 					cout<<"\nError, no exite partida guardada. Empezar nueva.\n"<<endl;
 					modalidad = 3;
 					break;
+				}else{
+					fread(&reg, sizeof(Participantes), 1, arch);
+					while(!feof(arch)){
+						if(reg.partidaTerminada){
+							cout<<"\nError, la partida está terminada. Empezar nueva.\n"<<endl;
+							modalidad = 3;
+							fclose(arch);
+							break;
+						}
+						fread(&reg, sizeof(Participantes), 1, arch);
+					}
+					fclose(arch);
 				}
 				cout<<"\n\t- - - - - - Retormando partida - - - - - -\n"<<endl;
 				//continuar partida: Tengo que abrir preguntasSave.dat 
@@ -498,6 +511,12 @@ void mostrarGanador(Participantes arr[]){
 			break;
 		}
 	}
+	//marco que se terminó la partida
+	cons.partidaTerminada = true;
+	FILE *fp = fopen("save.dat", "a");
+	fwrite(&cons, sizeof(Participantes) ,1, fp);
+	fclose(fp);
+
 	if(ganador){
 		cout<<"\n\n\n\t\t $$$ PRIMER PUESTO $$$\n";
 		cout<<"\n\t\tFelicitaciones "<<arr[0].nombrePart<<" !!!"<<endl;

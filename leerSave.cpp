@@ -21,6 +21,7 @@ int main(){
 			cout<<"Es correcta?: "<<reg.info.esCorrecta<<"\t# Puntaje: "<<reg.puntaje<<endl;
 			cout<<"i="<<reg.i<<", j="<<reg.j<<" ";
 			cout<<"empatado: "<<reg.empatado<<" rondaEmpate: "<<reg.rondaEmpate<<endl;
+			cout<<"partidaTerminada= "<<reg.partidaTerminada<<endl;
 			cout<<endl;
 		}
 		fread(&reg, sizeof(Participantes),1,arch);

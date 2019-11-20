@@ -53,6 +53,7 @@ struct Participantes{
 	int i;
 	int j;
 	int k;
+	bool partidaTerminada = false;
 };
 
 //------------------------------------------------
